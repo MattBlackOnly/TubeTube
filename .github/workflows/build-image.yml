@@ -27,8 +27,8 @@ jobs:
         
       - name: Build Image
         run: |
-          docker build . --tag ghcr.io/mattblacknow/tubetube:latest
-          docker push ghcr.io/mattblacknow/tubetube:latest
+          docker build . --tag ghcr.io/mattblackonly/tubetube:latest
+          docker push ghcr.io/mattblackonly/tubetube:latest
 
-          docker tag ghcr.io/mattblacknow/tubetube:latest ghcr.io/mattblacknow/tubetube:${{ env.VERSION }}
-          docker push ghcr.io/mattblacknow/tubetube:${{ env.VERSION }}
+          docker tag ghcr.io/mattblackonly/tubetube:latest ghcr.io/mattblackonly/tubetube:${{ env.VERSION }}
+          docker push ghcr.io/mattblackonly/tubetube:${{ env.VERSION }}
