@@ -8,6 +8,8 @@ on:
 jobs:
   check-yt-dlp-version:
     runs-on: ubuntu-latest
+    outputs:
+      updated: ${{ steps.update_requirements.outputs.updated }}
 
     steps:
     - name: Checkout code
@@ -31,22 +33,26 @@ jobs:
     - name: Extract yt-dlp version from requirements.txt
       id: extract_version
       run: |
-        # Extract yt-dlp version from requirements.txt
         current_version=$(grep -oP "(?<=yt_dlp==)\d+(\.\d+)+" requirements.txt || echo "0.0")
         echo "Version in requirements.txt: $current_version"
         echo "current_version=$current_version" >> $GITHUB_ENV
 
     - name: Update requirements.txt if new version available
       id: update_requirements
-      if: ${{ env.latest_version != env.current_version }}
       run: |
-        latest_version=${{ env.latest_version }}
-        sed -i "s/^yt_dlp.*/yt_dlp==$latest_version/" requirements.txt
-        git config --global user.email "updater@tubetube"
-        git config --global user.name "AutoUpdater"
-        git commit -m "Update yt-dlp version to $latest_version" requirements.txt
-        git push
-        echo "updated=true" >> $GITHUB_ENV
+        if [ "${{ env.latest_version }}" != "${{ env.current_version }}" ]; then
+          latest_version=${{ env.latest_version }}
+          sed -i "s/^yt_dlp.*/yt_dlp==$latest_version/" requirements.txt
+          git config --global user.email "updater@tubetube"
+          git config --global user.name "AutoUpdater"
+          git commit -m "Update yt-dlp version to $latest_version" requirements.txt
+          git push
+          echo "updated=true" >> $GITHUB_ENV
+        else
+          echo "updated=false" >> $GITHUB_ENV
+        fi
+      outputs:
+        updated: ${{ steps.update_requirements.outputs.updated }}
 
   generate-release:
     runs-on: ubuntu-latest
@@ -66,7 +72,6 @@ jobs:
     - name: Increment release
       id: increment_release
       run: |
-        # Get the latest tag, format it, and increment the patch release
         latest_tag=$(git tag --list | sed 's/^v//' | sort -V | tail -n 1 || echo "0.0.0")
         major=$(echo $latest_tag | cut -d. -f1)
         minor=$(echo $latest_tag | cut -d. -f2)
