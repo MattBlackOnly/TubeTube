@@ -1,0 +1,95 @@
+name: Check and Update yt-dlp Version
+
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-yt-dlp-version:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.PAT }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Get latest yt-dlp version
+      id: get_latest_ytdlp_version
+      run: |
+        pip install yt-dlp
+        latest_version=$(yt-dlp --version)
+        echo "Latest yt-dlp version: $latest_version"
+        echo "latest_version=$latest_version" >> $GITHUB_ENV
+
+    - name: Extract yt-dlp version from requirements.txt
+      id: extract_version
+      run: |
+        # Extract yt-dlp version from requirements.txt
+        current_version=$(grep -oP "(?<=yt_dlp==)\d+(\.\d+)+" requirements.txt || echo "0.0")
+        echo "Version in requirements.txt: $current_version"
+        echo "current_version=$current_version" >> $GITHUB_ENV
+
+    - name: Update requirements.txt if new version available
+      id: update_requirements
+      if: ${{ env.latest_version != env.current_version }}
+      run: |
+        latest_version=${{ env.latest_version }}
+        sed -i "s/^yt_dlp.*/yt_dlp==$latest_version/" requirements.txt
+        git config --global user.email "updater@tubetube"
+        git config --global user.name "AutoUpdater"
+        git commit -m "Update yt-dlp version to $latest_version" requirements.txt
+        git push
+        echo "updated=true" >> $GITHUB_ENV
+
+  generate-release:
+    runs-on: ubuntu-latest
+    needs: check-yt-dlp-version
+    if: ${{ needs.check-yt-dlp-version.outputs.updated == 'true' }}
+
+    env:
+      GH_TOKEN: ${{ secrets.PAT }}
+
+    steps:
+    - name: Fetch and list tags
+      run: |
+        git fetch --tags
+        echo "Tags:"
+        git tag --list
+
+    - name: Increment release
+      id: increment_release
+      run: |
+        # Get the latest tag, format it, and increment the patch release
+        latest_tag=$(git tag --list | sed 's/^v//' | sort -V | tail -n 1 || echo "0.0.0")
+        major=$(echo $latest_tag | cut -d. -f1)
+        minor=$(echo $latest_tag | cut -d. -f2)
+        patch=$(echo $latest_tag | cut -d. -f3)
+        new_patch=$((patch + 1))
+        new_tag="v${major}.${minor}.${new_patch}"
+
+        echo "CURRENT_RELEASE=$latest_tag" >> $GITHUB_ENV
+        echo "NEW_RELEASE=$new_tag" >> $GITHUB_ENV
+        echo "Current release: $latest_tag"
+        echo "New release: $new_tag"
+
+    - name: Create new Git tag
+      if: ${{ env.latest_version != env.current_version }}
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git tag -a ${{ env.NEW_RELEASE }} -m "Release version ${{ env.NEW_RELEASE }}"
+        git push origin ${{ env.NEW_RELEASE }}
+
+    - name: Create release
+      run: |
+        gh release create "v${{ env.NEW_RELEASE }}" \
+            --repo="${GITHUB_REPOSITORY}" \
+            --title="v${{ env.NEW_RELEASE }}" \
+            --generate-notes
