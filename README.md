@@ -22,6 +22,7 @@ services:
     restart: unless-stopped
 ```
 
+
 ## Folder Configuration
 
 Create a `settings.yaml` file in the `/path/to/config` directory with the following format:
@@ -53,5 +54,11 @@ Video:
 - The volume paths in the `docker-compose.yml` file should match the names specified in the settings.yaml file (e.g., /data/**General**, etc..).
 - You can create as many folder locations as needed in `settings.yaml`, but each must be mapped individually in `docker-compose.yml`.
 
+
+### Cookies File Configuration:
+The application expects a cookies file to be located in the config directory and named cookies.txt. If the file is present, its path will be set for use in the application. If not, the application will continue to function without it.
+
+
+## Screenshot
 
 ![Screenshot](tubetube/static/screenshot.png)
