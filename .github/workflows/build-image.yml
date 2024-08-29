@@ -23,7 +23,8 @@ jobs:
       - name: Get Version
         id: get_version
         run: |
-          VERSION="${{ github.event.release.tag_name }}"
+          RAW_VERSION="${{ github.event.release.tag_name }}"
+          VERSION="${RAW_VERSION#v}"
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
           echo "Version = ${VERSION}"
       
