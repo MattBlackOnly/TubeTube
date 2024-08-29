@@ -20,11 +20,13 @@ jobs:
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
 
-      - name: Get current version
+      - name: Get Version
+        id: get_version
         run: |
-          echo "VERSION=$(echo ${{ github.event.release.tag_name }})" >> $GITHUB_ENV
-          echo "Version: ${{ env.VERSION }}"
-        
+          VERSION="${{ github.event.release.tag_name }}"
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "Version = ${VERSION}"
+      
       - name: Build Image
         run: |
           docker build . --tag ghcr.io/mattblackonly/tubetube:latest
