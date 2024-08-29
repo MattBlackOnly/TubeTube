@@ -23,7 +23,7 @@ jobs:
       - name: Get current version
         run: |
           echo "VERSION=$(echo ${{ github.event.release.tag_name }})" >> $GITHUB_ENV
-          echo "Version: $VERSION"
+          echo "Version: ${{ env.VERSION }}"
         
       - name: Build Image
         run: |
