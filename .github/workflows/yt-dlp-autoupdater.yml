@@ -60,7 +60,12 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.PAT }}
 
-    steps:
+    steps:    
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.PAT }}
+    
     - name: Fetch and list tags
       run: |
         git fetch --tags
