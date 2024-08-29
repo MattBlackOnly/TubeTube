@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeTube</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"
+        integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <link rel="icon" type="image/x-icon" href="{{url_for('static', filename='logo.png')}}">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="container mt-3">
+        <!-- Title Bar -->
+        <header class="mb-3">
+            <h1 class="text-center">TubeTube</h1>
+        </header>
+
+        <!-- Entry Box and Download Button -->
+        <section class="mb-4">
+            <div class="input-group mb-3">
+                <input id="download-url" type="text" class="form-control" placeholder="Enter video URL..."
+                    aria-label="Download URL" aria-describedby="download-url">
+                <button class="btn btn-primary" type="button" id="download-button">
+                    <span id="spinner-border" class="spinner-border spinner-border-sm ms-2" role="status"
+                        aria-hidden="true" style="display: none;"></span>
+                    Download
+                </button>
+            </div>
+        </section>
+
+        <!-- Settings and Folder Location Selector -->
+        <section class="mb-4">
+            <div class="card p-3">
+                <div class="row align-items-center">
+                    <div class="col-6 d-flex align-items-center pe-0">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="media-type-switch">
+                            <label class="form-check-label" for="media-type-switch">Audio Only</label>
+                        </div>
+                    </div>
+                    <div class="col-6 d-flex align-items-center ps-0">
+                        <select class="form-select" id="folder-location-select" aria-label="Select folder location">
+                            <option selected>Select folder location</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Buttons to Remove Selected and Completed Downloads -->
+        <section class="mb-3 text-center">
+            <button class="btn btn-outline-danger mb-1 me-2" id="remove-selected">
+                <i class="bi bi-trash"></i> Remove/Stop Selected
+            </button>
+            <button class="btn btn-outline-warning mb-1" id="remove-completed">
+                <i class="bi bi-check-circle"></i> Remove Completed
+            </button>
+        </section>
+
+        <!-- Activity Table -->
+        <section class="activity-table-section">
+            <table class="activity-table table table-striped table-hover">
+                <thead class="bg-primary-subtle sticky-top top-0">
+                    <tr>
+                        <th scope="col">
+                            <input type="checkbox" id="select-all" name="select-all">
+                        </th>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Progress</th>
+                    </tr>
+                </thead>
+                <tbody id="activity-table-body">
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Row Template -->
+        <template id="row-template">
+            <tr>
+                <td><input type="checkbox" class="row-select"></td>
+                <td class="id"></td>
+                <td class="title text-wrap"></td>
+                <td class="status text-wrap"></td>
+                <td class="download-progress"></td>
+            </tr>
+        </template>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-1">
+        <div class="container d-flex justify-content-center">
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-secondary" id="dayMode">
+                    <input type="radio" name="options" autocomplete="off" checked class="visually-hidden">
+                    <i class="bi bi-brightness-high-fill"></i>
+                </button>
+                <button type="button" class="btn btn-outline-secondary" id="autoMode">
+                    <input type="radio" name="options" autocomplete="off" class="visually-hidden">
+                    <i class="bi bi-circle-half"></i>
+                </button>
+                <button type="button" class="btn btn-outline-secondary" id="nightMode">
+                    <input type="radio" name="options" autocomplete="off" class="visually-hidden">
+                    <i class="bi bi-moon-fill"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{url_for('static', filename='js_general_script.js')}}"></script>
+    <script src="{{url_for('static', filename='js_table_script.js')}}"></script>
+    <script src="{{url_for('static', filename='js_theme_switcher.js')}}"></script>
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 85% !important;
+}
+
+.activity-table-section {
+    height: 45vh;
+    overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #ffffff;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #007bffa4;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #007bff;
+}
+
+::-webkit-scrollbar-corner {
+    background: #f1f1f1;
+}
+
+@media screen and (max-width: 600px) {
+    .container {
+        max-width: 99% !important;
+    }
+
+    .activity-table-section {
+        height: 50vh;
+    }
+}

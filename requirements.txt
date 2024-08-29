@@ -1,0 +1,7 @@
+gunicorn
+gevent
+gevent-websocket
+flask
+flask_socketio
+yt_dlp
+pyyaml
