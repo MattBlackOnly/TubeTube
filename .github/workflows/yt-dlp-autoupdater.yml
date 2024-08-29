@@ -88,7 +88,6 @@ jobs:
         echo "New release: $new_tag"
 
     - name: Create new Git tag
-      if: ${{ env.latest_version != env.current_version }}
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -97,7 +96,7 @@ jobs:
 
     - name: Create release
       run: |
-        gh release create "v${{ env.NEW_RELEASE }}" \
+        gh release create "${{ env.NEW_RELEASE }}" \
             --repo="${GITHUB_REPOSITORY}" \
-            --title="v${{ env.NEW_RELEASE }}" \
+            --title="${{ env.NEW_RELEASE }}" \
             --generate-notes
