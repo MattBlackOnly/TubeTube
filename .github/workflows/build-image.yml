@@ -1,6 +1,8 @@
 name: Build Image and Deploy to GHCR
 
 on:
+  workflow_dispatch:
+
   release:
     types: [created]
 
@@ -25,6 +27,6 @@ jobs:
         run: |
           docker build . --tag ghcr.io/mattblacknow/tubetube:latest
           docker push ghcr.io/mattblacknow/tubetube:latest
-          
+
           docker tag ghcr.io/mattblacknow/tubetube:latest ghcr.io/mattblacknow/tubetube:${{ env.VERSION }}
           docker push ghcr.io/mattblacknow/tubetube:${{ env.VERSION }}
