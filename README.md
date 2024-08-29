@@ -18,7 +18,7 @@ services:
       - /path/to/videos:/data/Video
       - /path/to/config:/config
     environment:
-      - THREAD_COUNT=4
+      - thread_count=1
     restart: unless-stopped
 ```
 
