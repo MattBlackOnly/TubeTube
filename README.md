@@ -1,5 +1,16 @@
 ![Logo](tubetube/static/tubetube.png)
 
+
+**TubeTube** is a simple YouTube downloader.
+
+
+## Features:
+- **Multithreaded Downloads:** Fast, simultaneous downloads.
+- **Custom Locations & Formats:** YAML-based settings.
+- **Mobile Optimized:** Designed for small screens.
+- **Download Options:** Choose between audio or video.
+
+
 ## Docker Compose Configuration
 
 Create a `docker-compose.yml` file:
