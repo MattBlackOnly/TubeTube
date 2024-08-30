@@ -173,10 +173,15 @@ class DownloadManager:
         if d["status"] == "downloading":
             with self.lock:
                 item = self.all_items[download_id]
-                percent_str = re.sub(r"\x1b\[[0-9;]*m", "", d.get("_percent_str", "")).strip()
-                speed_str = re.sub(r"\x1b\[[0-9;]*m", "", d.get("_speed_str", "")).strip()
-
-                progress_message = f"{percent_str} at {speed_str}"
+                live = d.get("info_dict", {}).get("is_live", False)
+                if live:
+                    fragment_index_str = d.get("fragment_index", 1)
+                    elapsed_str = re.sub(r"\x1b\[[0-9;]*m", "", d.get("_elapsed_str", "")).strip()
+                    progress_message = f"{fragment_index_str} ({elapsed_str})"
+                else:
+                    percent_str = re.sub(r"\x1b\[[0-9;]*m", "", d.get("_percent_str", "")).strip()
+                    speed_str = re.sub(r"\x1b\[[0-9;]*m", "", d.get("_speed_str", "")).strip()
+                    progress_message = f"{percent_str} at {speed_str}"
 
                 item["progress"] = progress_message
                 item["status"] = "Downloading"
