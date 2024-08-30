@@ -9,6 +9,7 @@
 - **Custom Locations & Formats:** YAML-based settings.
 - **Mobile Optimized:** Designed for small screens.
 - **Download Options:** Choose between audio or video.
+- **Live Video Support:** Can handle multiple live streams.
 
 
 ## Docker Compose Configuration
