@@ -65,10 +65,7 @@ Video:
 - Ensure the `settings.yaml` file is correctly placed in the `/path/to/config` directory.
 - The volume paths in the `docker-compose.yml` file should match the names specified in the settings.yaml file (e.g., /data/**General**, etc..).
 - You can create as many folder locations as needed in `settings.yaml`, but each must be mapped individually in `docker-compose.yml`.
-
-
-### Cookies File Configuration:
-The application expects a cookies file to be located in the config directory and named cookies.txt. If the file is present, its path will be set for use in the application. If not, the application will continue to function without it.
+- To use a cookies file, create a `cookies.txt` file and place it in the config directory.
 
 
 ## Screenshot
