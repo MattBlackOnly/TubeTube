@@ -1,5 +1,11 @@
 FROM python:3.11-alpine
 
+# Install dependencies, including su-exec
+RUN apk update && apk add --no-cache ffmpeg su-exec
+
+# Create appuser and appgroup
+RUN addgroup -g 1000 appgroup && adduser -D -u 1000 -G appgroup appuser
+
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -12,13 +18,13 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
+# Copy the application code
 COPY . .
 
-# Install ffmpeg
-RUN apk update && apk add --no-cache ffmpeg
+# Ensure proper ownership of /config and /data directories
+RUN mkdir -p /config /data && chown -R appuser:appgroup /config /data
 
-# Copy the start script and make it executable
+# Copy start script and make it executable
 COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
