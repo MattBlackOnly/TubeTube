@@ -14,7 +14,7 @@ class DownloadManager:
         self.all_items = {}
         self.lock = threading.Lock()
         self.stop_signals = {}
-        self.thread_count = int(os.getenv("thread_count", "4"))
+        self.thread_count = int(os.getenv("THREAD_COUNT", "4"))
         logging.info(f"{self.thread_count = }")
 
         os_system = platform.system()

@@ -30,7 +30,9 @@ services:
       - /path/to/videos:/data/Video
       - /path/to/config:/config
     environment:
-      - thread_count=1
+      - THREAD_COUNT=1
+      - PUID=1000
+      - PGID=1000
     restart: unless-stopped
 ```
 
