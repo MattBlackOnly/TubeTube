@@ -52,7 +52,7 @@ Music:
   audio_format_id: '140'
 Podcast:
   audio_ext: m4a
-  audio_format_id: '625'
+  audio_format_id: '140'
 Video:
   audio_format_id: '140'
   video_ext: mp4
