@@ -13,7 +13,7 @@ class Config:
     DEFAULT_FOLDER_LOCATIONS = {
         "Video": {"video_ext": "mp4", "video_format_id": "625", "audio_format_id": "140"},
         "Music": {"audio_ext": "mp3", "audio_format_id": "140"},
-        "Podcast": {"audio_ext": "m4a", "audio_format_id": "625"},
+        "Podcast": {"audio_ext": "m4a", "audio_format_id": "140"},
         "General": {"audio_ext": "m4a", "audio_format_id": "140", "video_ext": "mp4", "video_format_id": "625"},
     }
 
