@@ -69,16 +69,16 @@
 
         <!-- Activity Table -->
         <section class="activity-table-section">
-            <table class="activity-table table table-striped table-hover">
+            <table class="activity-table table table-striped table-hover fixed-layout">
                 <thead class="sticky-top top-0">
                     <tr>
-                        <th scope="col">
+                        <th scope="col" class="text-center checkbox-column">
                             <input type="checkbox" id="select-all" name="select-all">
                         </th>
-                        <th scope="col">#</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Progress</th>
+                        <th scope="col" class="id-column">#</th>
+                        <th scope="col" class="title-column">Title</th>
+                        <th scope="col" class="status-column">Status</th>
+                        <th scope="col" class="progress-column">Progress</th>
                     </tr>
                 </thead>
                 <tbody id="activity-table-body">
@@ -89,11 +89,11 @@
         <!-- Row Template -->
         <template id="row-template">
             <tr>
-                <td><input type="checkbox" class="row-select"></td>
+                <td class="text-center"><input type="checkbox" class="row-select"></td>
                 <td class="id"></td>
                 <td class="title text-wrap"></td>
                 <td class="status text-wrap"></td>
-                <td class="download-progress"></td>
+                <td class="download-progress text-wrap"></td>
             </tr>
         </template>
     </div>
