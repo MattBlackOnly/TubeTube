@@ -73,24 +73,26 @@ body {
         overflow-x: auto;
     }
 
-    .checkbox-column {
-        width: 6%;
+    .id-column,
+    .progress-column {
+        display: none;
     }
 
-    .id-column {
-        width: 6%;
+    .id,
+    .download-progress {
+        display: none;
+    }
+
+    .checkbox-column {
+        width: 5%;
     }
 
     .title-column {
-        width: 45%;
+        width: 40%;
     }
 
     .status-column {
-        width: 20%;
-    }
-
-    .progress-column {
-        width: 20%;
+        width: 25%;
     }
 
     .fixed-layout {
