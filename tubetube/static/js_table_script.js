@@ -94,7 +94,7 @@ removeCompleted.addEventListener('click', function () {
 
     document.querySelectorAll('#activity-table-body tr').forEach(row => {
         const status = row.querySelector('.status').textContent.trim()
-        if (status === 'Completed' || status === 'Cancelled') {
+        if (status === 'Complete' || status === 'Cancelled') {
             const id = parseInt(row.getAttribute('data-id'), 10);
             completedIds.push(id);
             row.remove();
