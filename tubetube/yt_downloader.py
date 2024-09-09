@@ -52,7 +52,8 @@ class DownloadManager:
             return
 
         if "entries" in yt_info_dict:
-            item_info["folder_name"] = f'{item_info.get("folder_name")}/{yt_info_dict.get("title")}'
+            playlist_name = re.sub(r'[<>:"/\\|?*]', "_", yt_info_dict.get("title"))
+            item_info["folder_name"] = f'{item_info.get("folder_name")}/{playlist_name}'
             for entry in yt_info_dict["entries"]:
                 self._enqueue_item(entry, item_info)
         else:
@@ -122,10 +123,13 @@ class DownloadManager:
         else:
             download_format = f"{video_format_id}+{audio_format_id}/bestvideo+bestaudio/best"
 
+        item_title = re.sub(r'[<>:"/\\|?*]', "-", item.get("title"))
+        file_path = f"/data/{folder_name}/{item_title}"
+
         ydl_opts = {
             "ignore_no_formats_error": True,
             "noplaylist": True,
-            "outtmpl": f"/data/{folder_name}/%(title)S.%(ext)s",
+            "outtmpl": f"{file_path}.%(ext)s",
             "progress_hooks": [lambda d: self._progress_hook(d, download_id)],
             "ffmpeg_location": self.ffmpeg_location,
             "writethumbnail": True,
