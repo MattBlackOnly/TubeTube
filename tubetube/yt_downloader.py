@@ -43,7 +43,14 @@ class DownloadManager:
 
     def add_to_queue(self, item_info):
         url = item_info.get("url", "")
-        yt_info_dict = self.ydl_for_parsing.extract_info(url, download=False)
+        try:
+            yt_info_dict = self.ydl_for_parsing.extract_info(url, download=False)
+
+        except Exception as e:
+            logging.error(f"Error extracting info: {e}")
+            logging.error(f"Nothing Added to Queue")
+            return
+
         if "entries" in yt_info_dict:
             item_info["folder_name"] = f'{item_info.get("folder_name")}/{yt_info_dict.get("title")}'
             for entry in yt_info_dict["entries"]:
@@ -153,15 +160,16 @@ class DownloadManager:
             logging.info(f'Starting Download: {item.get("title")}')
             ydl = yt_dlp.YoutubeDL(ydl_opts)
             ydl.download([item["url"]])
-            item["status"] = "Completed"
+            item["status"] = "Complete"
             logging.info(f'Finished Download: {item.get("title")}')
 
         except DownloadCancelledException:
             item["status"] = "Cancelled"
 
         except Exception as e:
-            item["status"] = f"Failed: {str(e)}"
-            logging.error(f'Error downloading: {item.get("title")}')
+            item["status"] = f"Failed: {type(e).__name__}"
+            item["progress"] = "Error"
+            logging.error(f'Error downloading: {item.get("title")} - {str(e)}')
 
         finally:
             self.socketio.emit("update_download_item", {"item": item})
@@ -190,7 +198,7 @@ class DownloadManager:
         elif d["status"] == "finished":
             with self.lock:
                 item = self.all_items[download_id]
-                item["progress"] = "Downloaded"
+                item["progress"] = "Done"
                 item["status"] = "Processing"
                 self.socketio.emit("update_download_item", {"item": item})
 

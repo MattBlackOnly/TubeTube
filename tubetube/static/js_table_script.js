@@ -4,14 +4,22 @@ const selectAll = document.getElementById('select-all');
 const removeSelected = document.getElementById('remove-selected');
 const removeCompleted = document.getElementById('remove-completed');
 
+function updateSelectAllState() {
+    const allCheckboxes = document.querySelectorAll('.row-select');
+    const allChecked = Array.from(allCheckboxes).every(checkbox => checkbox.checked);
+    selectAll.checked = allChecked;
+}
+
 function renderRow(data) {
     const row = document.importNode(template.content, true);
     const tr = row.querySelector('tr');
 
     const checkbox = tr.querySelector('.row-select');
     const uniqueId = `checkbox-${data.id}`;
+
     checkbox.setAttribute('id', uniqueId);
     checkbox.setAttribute('name', `row-select-${data.id}`);
+    checkbox.addEventListener('change', updateSelectAllState);
 
     tr.setAttribute('data-id', data.id);
     tr.querySelector('.row-select').setAttribute('data-id', data.id);
@@ -42,6 +50,11 @@ socket.on('remove_download_item', (update) => {
     const row = document.querySelector(`tr[data-id='${update.id}']`);
     if (row) {
         row.remove();
+    }
+
+    const rowCount = document.querySelectorAll('#activity-table-body tr').length;
+    if (rowCount === 0) {
+        selectAll.checked = false;
     }
 });
 
@@ -75,7 +88,6 @@ removeSelected.addEventListener('click', function () {
         socket.emit('remove_items', removeIds);
     }
 });
-
 
 removeCompleted.addEventListener('click', function () {
     const completedIds = [];

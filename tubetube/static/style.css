@@ -34,6 +34,35 @@ body {
     background: #f1f1f1;
 }
 
+.fixed-layout {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.checkbox-column {
+    width: 5%;
+}
+
+.id-column {
+    width: 5%;
+}
+
+.title-column {
+    width: 45%;
+}
+
+.status-column {
+    width: 27.5%;
+}
+
+.progress-column {
+    width: 17.5%;
+}
+
+.text-wrap {
+    white-space: normal;
+}
+
 @media screen and (max-width: 600px) {
     .container {
         max-width: 99% !important;
@@ -41,5 +70,31 @@ body {
 
     .activity-table-section {
         height: 50vh;
+        overflow-x: auto;
+    }
+
+    .checkbox-column {
+        width: 6%;
+    }
+
+    .id-column {
+        width: 6%;
+    }
+
+    .title-column {
+        width: 45%;
+    }
+
+    .status-column {
+        width: 20%;
+    }
+
+    .progress-column {
+        width: 20%;
+    }
+
+    .fixed-layout {
+        overflow-x: auto;
+        width: 100%;
     }
 }
