@@ -178,7 +178,7 @@ class DownloadManager:
 
         except DownloadCancelledException:
             item["status"] = "Cancelled"
-            logging.info(f"Download cancelled: {item.get("title")}")
+            logging.info(f'Download cancelled: {item.get("title")}')
 
         except Exception as e:
             item["status"] = f"Failed: {type(e).__name__}"
