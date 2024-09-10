@@ -43,6 +43,10 @@ class DownloadManager:
 
     def add_to_queue(self, item_info):
         url = item_info.get("url", "")
+
+        if "&list=" in url:
+            url = re.sub(r"&list=.*", "", url)
+
         try:
             yt_info_dict = self.ydl_for_parsing.extract_info(url, download=False)
 
