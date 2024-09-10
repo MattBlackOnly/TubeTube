@@ -15,19 +15,18 @@ class DownloadManager:
         self.lock = threading.Lock()
         self.stop_signals = {}
         self.thread_count = int(os.getenv("THREAD_COUNT", "4"))
-        logging.info(f"{self.thread_count = }")
+        logging.info(f"Thread Count: {self.thread_count}")
 
         os_system = platform.system()
-        logging.info(f"{os_system = }")
+        logging.info(f"OS: {os_system}")
 
-        if os_system == "Windows":
-            self.ffmpeg_location = "D:\\"
-        else:
-            self.ffmpeg_location = "/usr/bin/ffmpeg"
+        self.ffmpeg_location = "D:\\" if os_system == "Windows" else "/usr/bin/ffmpeg"
+        logging.info(f"FFmpeg location set to: {self.ffmpeg_location}")
 
         for i in range(self.thread_count):
             worker = threading.Thread(target=self._process_queue, daemon=True, name=f"Worker-{i}")
             worker.start()
+            logging.info(f"Started worker thread: {worker.name}")
 
         parsing_opts = {
             "quiet": True,
@@ -43,12 +42,14 @@ class DownloadManager:
 
     def add_to_queue(self, item_info):
         url = item_info.get("url", "")
+        logging.info(f"Processing URL: {url}")
 
         if "&list=" in url:
             url = re.sub(r"&list=.*", "", url)
 
         try:
             yt_info_dict = self.ydl_for_parsing.extract_info(url, download=False)
+            logging.info(f"Extracted info for {yt_info_dict.get('title', 'unknown')}")
 
         except Exception as e:
             logging.error(f"Error extracting info: {e}")
@@ -58,6 +59,7 @@ class DownloadManager:
         if "entries" in yt_info_dict:
             playlist_name = re.sub(r'[<>:"/\\|?*]', "_", yt_info_dict.get("title"))
             item_info["folder_name"] = f'{item_info.get("folder_name")}/{playlist_name}'
+            logging.info(f"Adding playlist: {playlist_name} to queue")
             for entry in yt_info_dict["entries"]:
                 self._enqueue_item(entry, item_info)
         else:
@@ -82,6 +84,7 @@ class DownloadManager:
                 self.all_items[download_id] = item
                 self.stop_signals[download_id] = threading.Event()
             self.download_queue.put(download_id)
+            logging.info(f'Queued item: {item["title"]} with ID: {download_id}')
             self.socketio.emit("update_download_list", self.all_items)
 
         except Exception as e:
@@ -95,21 +98,23 @@ class DownloadManager:
         while True:
             try:
                 download_id = self.download_queue.get()
+                logging.info(f"Processing download ID: {download_id}")
 
                 if self.all_items[download_id]["skipped"]:
                     self.all_items[download_id]["status"] = "Cancelled"
+                    logging.info(f"Item {download_id} marked as skipped.")
                     self.socketio.emit("update_download_item", {"item": self.all_items[download_id]})
 
                 else:
                     self._download_item(download_id)
 
             except Exception as e:
-                logging.error(f"Processing Error: {e}")
+                logging.error(f"Processing error for ID {download_id}: {e}")
 
             finally:
                 self.download_queue.task_done()
                 if self.download_queue.empty():
-                    logging.info(f"Queue Empty")
+                    logging.info(f"Queue is empty.")
 
     def _download_item(self, download_id):
         item = self.all_items[download_id]
@@ -169,10 +174,11 @@ class DownloadManager:
             ydl = yt_dlp.YoutubeDL(ydl_opts)
             ydl.download([item["url"]])
             item["status"] = "Complete"
-            logging.info(f'Finished Download: {item.get("title")}')
+            logging.info(f'Finished download: {item.get("title")}')
 
         except DownloadCancelledException:
             item["status"] = "Cancelled"
+            logging.info(f"Download cancelled: {item.get("title")}")
 
         except Exception as e:
             item["status"] = f"Failed: {type(e).__name__}"
@@ -208,6 +214,7 @@ class DownloadManager:
                 item = self.all_items[download_id]
                 item["progress"] = "Done"
                 item["status"] = "Processing"
+                logging.info(f'Download finished: {item.get("title")} - processing now')
                 self.socketio.emit("update_download_item", {"item": item})
 
     def cancel_items(self, item_ids):
@@ -216,6 +223,7 @@ class DownloadManager:
                 if item_id in self.all_items:
                     self.all_items[item_id]["skipped"] = True
                     self.all_items[item_id]["status"] = "Cancelling"
+                    logging.info(f"Item {item_id} marked for cancellation.")
                     if item_id in self.stop_signals:
                         self.stop_signals[item_id].set()
                     self.socketio.emit("update_download_item", {"item": self.all_items[item_id]})
@@ -224,6 +232,7 @@ class DownloadManager:
         with self.lock:
             for item_id in item_ids:
                 if item_id in self.all_items:
+                    logging.info(f"Removing item {item_id}")
                     if item_id in self.stop_signals:
                         self.stop_signals[item_id].set()
                     del self.all_items[item_id]
