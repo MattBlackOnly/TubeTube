@@ -46,7 +46,7 @@ class DownloadManager:
 
     def cleanup_temp_folder(self):
         try:
-            removable_extensions = (".tmp", ".part", ".webp", ".mp3", ".mp4", ".m4a", ".ytdl")
+            removable_extensions = (".tmp", ".part", ".webp", ".ytdl")
             for file_name in os.listdir(self.temp_folder):
                 file_path = os.path.join(self.temp_folder, file_name)
                 if os.path.isfile(file_path) and file_name.endswith(removable_extensions):
