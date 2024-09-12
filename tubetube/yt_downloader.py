@@ -15,8 +15,6 @@ class DownloadManager:
         self.lock = threading.Lock()
         self.stop_signals = {}
 
-        self.temp_folder = "/temp"
-
         os_system = platform.system()
         logging.info(f"OS: {os_system}")
 
@@ -42,6 +40,21 @@ class DownloadManager:
             "no_warnings": True,
         }
         self.ydl_for_parsing = yt_dlp.YoutubeDL(parsing_opts)
+
+        self.temp_folder = "/temp"
+        self.cleanup_temp_folder()
+
+    def cleanup_temp_folder(self):
+        try:
+            removable_extensions = (".tmp", ".part", ".webp", ".mp3", ".mp4", ".m4a", ".ytdl")
+            for file_name in os.listdir(self.temp_folder):
+                file_path = os.path.join(self.temp_folder, file_name)
+                if os.path.isfile(file_path) and file_name.endswith(removable_extensions):
+                    os.remove(file_path)
+                    logging.info(f"Deleted file: {file_path}")
+
+        except Exception as e:
+            logging.error(f"Error cleaning up temporary folder: {e}")
 
     def add_to_queue(self, item_info):
         url = item_info.get("url", "")

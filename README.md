@@ -29,7 +29,7 @@ services:
       - /path/to/podcasts:/data/Podcast
       - /path/to/videos:/data/Video
       - /path/to/config:/config
-      - /path/to/temp:/temp
+      - /path/to/temp:/temp # Mounting is optional. Temporary files are deleted on startup.
     environment:
       - THREAD_COUNT=1
       - PUID=1000
