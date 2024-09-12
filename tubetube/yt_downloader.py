@@ -14,14 +14,17 @@ class DownloadManager:
         self.all_items = {}
         self.lock = threading.Lock()
         self.stop_signals = {}
-        self.thread_count = int(os.getenv("THREAD_COUNT", "4"))
-        logging.info(f"Thread Count: {self.thread_count}")
+
+        self.temp_folder = "/temp"
 
         os_system = platform.system()
         logging.info(f"OS: {os_system}")
 
         self.ffmpeg_location = "D:\\" if os_system == "Windows" else "/usr/bin/ffmpeg"
         logging.info(f"FFmpeg location set to: {self.ffmpeg_location}")
+
+        self.thread_count = int(os.getenv("THREAD_COUNT", "4"))
+        logging.info(f"Thread Count: {self.thread_count}")
 
         for i in range(self.thread_count):
             worker = threading.Thread(target=self._process_queue, daemon=True, name=f"Worker-{i}")
@@ -57,7 +60,7 @@ class DownloadManager:
             return
 
         if "entries" in yt_info_dict:
-            playlist_name = re.sub(r'[<>:"/\\|?*]', "_", yt_info_dict.get("title"))
+            playlist_name = re.sub(r'[<>:"/\\|?*]', "-", yt_info_dict.get("title"))
             item_info["folder_name"] = f'{item_info.get("folder_name")}/{playlist_name}'
             logging.info(f"Adding playlist: {playlist_name} to queue")
             for entry in yt_info_dict["entries"]:
@@ -133,12 +136,12 @@ class DownloadManager:
             download_format = f"{video_format_id}+{audio_format_id}/bestvideo+bestaudio/best"
 
         item_title = re.sub(r'[<>:"/\\|?*]', "-", item.get("title"))
-        file_path = f"/data/{folder_name}/{item_title}"
+        final_path = f"/data/{folder_name}"
 
         ydl_opts = {
             "ignore_no_formats_error": True,
             "noplaylist": True,
-            "outtmpl": f"{file_path}.%(ext)s",
+            "outtmpl": f"{item_title}.%(ext)s",
             "progress_hooks": [lambda d: self._progress_hook(d, download_id)],
             "ffmpeg_location": self.ffmpeg_location,
             "writethumbnail": True,
@@ -148,6 +151,8 @@ class DownloadManager:
             "no_mtime": True,
             "live_from_start": True,
             "extractor_args": {"youtubetab": {"skip": ["authcheck"]}},
+            "paths": {"home": final_path, "temp": self.temp_folder},
+            "no_overwrites": True,
         }
         post_processors = [
             {"key": "EmbedThumbnail"},
