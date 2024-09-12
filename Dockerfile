@@ -1,4 +1,4 @@
-FROM python:3.11-alpine
+FROM python:3.12-alpine
 
 # Install dependencies, including su-exec
 RUN apk update && apk add --no-cache ffmpeg su-exec
@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Ensure proper ownership of /config and /data directories
-RUN mkdir -p /config /data && chown -R appuser:appgroup /config /data
+RUN mkdir -p /config /data /temp && chown -R appuser:appgroup /config /data /temp
 
 # Copy start script and make it executable
 COPY start.sh /app/start.sh

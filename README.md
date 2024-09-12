@@ -29,6 +29,7 @@ services:
       - /path/to/podcasts:/data/Podcast
       - /path/to/videos:/data/Video
       - /path/to/config:/config
+      - /path/to/temp:/temp
     environment:
       - THREAD_COUNT=1
       - PUID=1000
