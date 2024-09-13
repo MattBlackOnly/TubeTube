@@ -176,7 +176,7 @@ class DownloadManager:
                 {
                     "key": "FFmpegExtractAudio",
                     "preferredcodec": download_settings.get("audio_ext", "m4a"),
-                    "preferredquality": "192",
+                    "preferredquality": "0",
                 }
             )
         else:
