@@ -161,7 +161,7 @@ class DownloadManager:
             "quiet": True,
             "extract_flat": True,
             "format": download_format,
-            "no_mtime": True,
+            "updatetime": False,
             "live_from_start": True,
             "extractor_args": {"youtubetab": {"skip": ["authcheck"]}},
             "paths": {"home": final_path, "temp": self.temp_folder},
@@ -190,7 +190,8 @@ class DownloadManager:
         try:
             logging.info(f'Starting Download: {item.get("title")}')
             ydl = yt_dlp.YoutubeDL(ydl_opts)
-            ydl.download([item["url"]])
+            result = ydl.download([item["url"]])
+            item["progress"] = "Done" if result == 0 else "Incomplete"
             item["status"] = "Complete"
             logging.info(f'Finished download: {item.get("title")}')
 
@@ -217,7 +218,7 @@ class DownloadManager:
                 if live:
                     fragment_index_str = d.get("fragment_index", 1)
                     elapsed_str = re.sub(r"\x1b\[[0-9;]*m", "", d.get("_elapsed_str", "")).strip()
-                    progress_message = f"{fragment_index_str} ({elapsed_str})"
+                    progress_message = f"Frag: {fragment_index_str} ({elapsed_str})"
                 else:
                     percent_str = re.sub(r"\x1b\[[0-9;]*m", "", d.get("_percent_str", "")).strip()
                     speed_str = re.sub(r"\x1b\[[0-9;]*m", "", d.get("_speed_str", "")).strip()
@@ -230,7 +231,7 @@ class DownloadManager:
         elif d["status"] == "finished":
             with self.lock:
                 item = self.all_items[download_id]
-                item["progress"] = "Done"
+                item["progress"] = "Downloaded"
                 item["status"] = "Processing"
                 logging.info(f'Download finished: {item.get("title")} - processing now')
                 self.socketio.emit("update_download_item", {"item": item})
