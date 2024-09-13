@@ -1,4 +1,4 @@
-var socket = io();
+const socket = io();
 const folderSelect = document.getElementById('folder-location-select');
 const mediaTypeSwitch = document.getElementById('media-type-switch');
 const downloadButton = document.getElementById('download-button');
@@ -12,7 +12,8 @@ let folderData = {
 function populateDropdown() {
     folderSelect.innerHTML = '<option value="" selected>Select folder location</option>';
 
-    const dataToUse = mediaTypeSwitch.checked ? folderData.audio : folderData.video;
+    const mediaType = mediaTypeSwitch.checked ? 'audio' : 'video';
+    const dataToUse = folderData[mediaType];
 
     Object.keys(dataToUse).forEach(name => {
         const option = document.createElement('option');
@@ -21,7 +22,7 @@ function populateDropdown() {
         folderSelect.appendChild(option);
     });
 
-    const selectedFolder = localStorage.getItem('selectedFolder');
+    const selectedFolder = localStorage.getItem(`selectedFolder_${mediaType}`);
     if (selectedFolder && dataToUse[selectedFolder]) {
         folderSelect.value = selectedFolder;
     } else {
@@ -30,13 +31,15 @@ function populateDropdown() {
 }
 
 function saveSelection() {
-    localStorage.setItem('selectedFolder', folderSelect.value);
-    localStorage.setItem('mediaType', mediaTypeSwitch.checked ? 'audio' : 'video');
+    const mediaType = mediaTypeSwitch.checked ? 'audio' : 'video';
+    localStorage.setItem(`selectedFolder_${mediaType}`, folderSelect.value);
+    localStorage.setItem('mediaType', mediaType);
 }
 
 socket.on('update_folder_locations', function (data) {
     folderData = data;
-    mediaTypeSwitch.checked = localStorage.getItem('mediaType') === 'audio';
+    const savedMediaType = localStorage.getItem('mediaType') || 'video';
+    mediaTypeSwitch.checked = savedMediaType === 'audio';
     populateDropdown();
 });
 
@@ -55,16 +58,17 @@ downloadButton.addEventListener('click', function () {
         return;
     }
 
-    const folderName = document.getElementById('folder-location-select').value;
+    const folderName = folderSelect.value;
     const audio_only = mediaTypeSwitch.checked;
     socket.emit('download', { url: url.value, folder_name: folderName, audio_only: audio_only });
     url.disabled = true;
-    downloadButton.disabled = true
+    downloadButton.disabled = true;
     spinnerBorder.style.display = 'inline-block';
+
     setTimeout(() => {
-        spinnerBorder.style.display = 'none'
+        spinnerBorder.style.display = 'none';
         url.value = '';
         url.disabled = false;
-        downloadButton.disabled = false
-    }, 5000);
+        downloadButton.disabled = false;
+    }, 2500);
 });
