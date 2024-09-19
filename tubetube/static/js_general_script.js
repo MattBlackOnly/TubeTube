@@ -59,6 +59,11 @@ downloadButton.addEventListener('click', function () {
     }
 
     const folderName = folderSelect.value;
+    if (folderName == "Select folder location" || folderName == "") {
+        alert('No folder selected. Please select a valid folder.');
+        return;
+    }
+
     const audio_only = mediaTypeSwitch.checked;
     socket.emit('download', { url: url.value, folder_name: folderName, audio_only: audio_only });
     url.disabled = true;
@@ -71,4 +76,14 @@ downloadButton.addEventListener('click', function () {
         url.disabled = false;
         downloadButton.disabled = false;
     }, 2500);
+});
+
+socket.on("toast", function (data) {
+    document.getElementById('toast-title').innerText = data.title;
+    document.getElementById('toast-message').innerText = data.body;
+    document.getElementById('toast-time').innerText = new Date().toLocaleTimeString();
+
+    var toastElement = document.getElementById('toast');
+    var toast = new bootstrap.Toast(toastElement);
+    toast.show();
 });

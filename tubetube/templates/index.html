@@ -95,13 +95,30 @@
         <!-- Row Template -->
         <template id="row-template">
             <tr>
-                <td class="text-center"><input type="checkbox" class="row-select"></td>
+                <td class="text-center row-select-checkbox"><input type="checkbox" class="row-select"></td>
                 <td class="id"></td>
                 <td class="title text-wrap"></td>
                 <td class="status text-wrap"></td>
                 <td class="download-progress text-wrap"></td>
             </tr>
         </template>
+    </div>
+
+    <!-- Toast Container -->
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <!-- Toast -->
+            <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+                <div class="toast-header">
+                    <strong class="me-auto" id="toast-title">Toast</strong>
+                    <small id="toast-time">Now</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body" id="toast-message">
+                    Message.
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Footer -->
