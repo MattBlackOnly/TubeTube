@@ -41,10 +41,16 @@ body {
 
 .checkbox-column {
     width: 5%;
+    padding-bottom: 7.4px !important;
+}
+
+.row-select-checkbox {
+    padding-top: 9px !important;
 }
 
 .id-column {
     width: 5%;
+    padding-bottom: 7.2px !important;
 }
 
 .title-column {
@@ -85,6 +91,11 @@ body {
 
     .checkbox-column {
         width: 5%;
+        padding-bottom: 6.23px !important;
+    }
+
+    .row-select-checkbox {
+        padding-top: 9.75px !important;
     }
 
     .title-column {

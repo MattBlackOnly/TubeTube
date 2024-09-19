@@ -70,6 +70,7 @@ class DownloadManager:
         except Exception as e:
             logging.error(f"Error extracting info: {e}")
             logging.error(f"Nothing Added to Queue")
+            self.socketio.emit("toast", {"title": "Failed to add item to the queue.", "body": f"Please check the URL.\n\n {str(e)}"})
             return
 
         if "entries" in yt_info_dict:
