@@ -113,6 +113,7 @@ removeCompleted.addEventListener('click', function () {
 tableBody.addEventListener('click', function (event) {
     if (event.target.classList.contains('row-select')) {
         const currentCheckbox = event.target;
+
         if (event.shiftKey && lastChecked) {
             const checkboxes = Array.from(document.querySelectorAll('.row-select'));
             const start = checkboxes.indexOf(lastChecked);
@@ -123,7 +124,20 @@ tableBody.addEventListener('click', function (event) {
                 checkbox.checked = lastChecked.checked;
             });
         }
+
         lastChecked = currentCheckbox;
         updateSelectAllState();
+        return;
+    }
+
+    const row = event.target.closest('tr');
+    if (row) {
+        const checkbox = row.querySelector('.row-select');
+        if (checkbox) {
+            checkbox.checked = !checkbox.checked;
+
+            lastChecked = checkbox;
+            updateSelectAllState();
+        }
     }
 });
