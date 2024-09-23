@@ -3,11 +3,15 @@ const template = document.getElementById('row-template');
 const selectAll = document.getElementById('select-all');
 const removeSelected = document.getElementById('remove-selected');
 const removeCompleted = document.getElementById('remove-completed');
+let lastChecked = null;
 
 function updateSelectAllState() {
     const allCheckboxes = document.querySelectorAll('.row-select');
     const allChecked = Array.from(allCheckboxes).every(checkbox => checkbox.checked);
+    const anyChecked = Array.from(allCheckboxes).some(checkbox => checkbox.checked);
+
     selectAll.checked = allChecked;
+    selectAll.indeterminate = !allChecked && anyChecked;
 }
 
 function renderRow(data) {
@@ -103,5 +107,23 @@ removeCompleted.addEventListener('click', function () {
 
     if (completedIds.length > 0) {
         socket.emit('remove_items', completedIds);
+    }
+});
+
+tableBody.addEventListener('click', function (event) {
+    if (event.target.classList.contains('row-select')) {
+        const currentCheckbox = event.target;
+        if (event.shiftKey && lastChecked) {
+            const checkboxes = Array.from(document.querySelectorAll('.row-select'));
+            const start = checkboxes.indexOf(lastChecked);
+            const end = checkboxes.indexOf(currentCheckbox);
+
+            const range = checkboxes.slice(Math.min(start, end), Math.max(start, end) + 1);
+            range.forEach(checkbox => {
+                checkbox.checked = lastChecked.checked;
+            });
+        }
+        lastChecked = currentCheckbox;
+        updateSelectAllState();
     }
 });
