@@ -144,7 +144,7 @@ class DownloadManager:
         video_format_id = download_settings.get("video_format_id", {})
         audio_format_id = download_settings.get("audio_format_id", {})
 
-        if item.get("audio_only", False):
+        if item.get("audio_only"):
             download_format = f"{audio_format_id}/bestaudio/best"
         else:
             download_format = f"{video_format_id}+{audio_format_id}/bestvideo+bestaudio/best"
@@ -168,11 +168,10 @@ class DownloadManager:
             "paths": {"home": final_path, "temp": self.temp_folder},
             "no_overwrites": True,
         }
-        post_processors = [
-            {"key": "EmbedThumbnail"},
-            {"key": "FFmpegMetadata"},
-        ]
-        if item.get("audio_only", False):
+
+        post_processors = []
+
+        if item.get("audio_only"):
             post_processors.append(
                 {
                     "key": "FFmpegExtractAudio",
@@ -180,7 +179,9 @@ class DownloadManager:
                     "preferredquality": "0",
                 }
             )
-        else:
+        post_processors.extend([{"key": "FFmpegMetadata"}, {"key": "EmbedThumbnail"}])
+
+        if not item.get("audio_only"):
             ydl_opts["merge_output_format"] = "mp4"
 
         if self.cookies_file:
