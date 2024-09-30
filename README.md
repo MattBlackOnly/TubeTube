@@ -73,10 +73,16 @@ Video:
 
 ## Screenshots
 
-![Screenshot](tubetube/static/screenshot.png)
-
+### Phone Screenshot
 
 ![Phone](tubetube/static/phone-screenshot.png)
+
+
+
+### Desktop Screenshot
+
+![Screenshot](tubetube/static/screenshot.png)
+
 
 ---
 
