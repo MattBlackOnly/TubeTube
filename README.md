@@ -73,13 +73,13 @@ Video:
 
 ## Screenshots
 
-### Phone Screenshot
+### Phone (Dark Mode)
 
 ![Phone](tubetube/static/phone-screenshot.png)
 
 
 
-### Desktop Screenshot
+### Desktop (Dark Mode)
 
 ![Screenshot](tubetube/static/screenshot.png)
 
