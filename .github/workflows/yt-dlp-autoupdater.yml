@@ -20,7 +20,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.12'
 
     - name: Get latest yt-dlp version
       id: get_latest_ytdlp_version
@@ -65,6 +65,9 @@ jobs:
       uses: actions/checkout@v4
       with:
         token: ${{ secrets.PAT }}
+
+    - name: Pull latest changes
+      run: git pull origin main
     
     - name: Fetch and list tags
       run: |
