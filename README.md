@@ -71,9 +71,14 @@ Video:
 - To use a cookies file, create a `cookies.txt` file and place it in the config directory.
 
 
-## Screenshot
+## Screenshots
 
 ![Screenshot](tubetube/static/screenshot.png)
 
 
+![Phone](tubetube/static/phone-screenshot.png)
+
 ---
+
+
+
