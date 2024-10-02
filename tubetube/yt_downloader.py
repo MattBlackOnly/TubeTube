@@ -210,11 +210,11 @@ class DownloadManager:
             self.socketio.emit("update_download_item", {"item": item})
 
     def _progress_hook(self, d, download_id):
-        if self.stop_signals[download_id].is_set():
-            raise DownloadCancelledException("Cancelled")
+        try:
+            if self.stop_signals[download_id].is_set():
+                raise DownloadCancelledException("Cancelled")
 
-        if d["status"] == "downloading":
-            with self.lock:
+            if d["status"] == "downloading":
                 item = self.all_items[download_id]
                 live = d.get("info_dict", {}).get("is_live", False)
                 if live:
@@ -230,13 +230,15 @@ class DownloadManager:
                 item["status"] = "Downloading"
                 self.socketio.emit("update_download_item", {"item": item})
 
-        elif d["status"] == "finished":
-            with self.lock:
+            elif d["status"] == "finished":
                 item = self.all_items[download_id]
                 item["progress"] = "Downloaded"
                 item["status"] = "Processing"
                 logging.info(f'Download finished: {item.get("title")} - processing now')
                 self.socketio.emit("update_download_item", {"item": item})
+
+        except Exception as e:
+            logging.error(f"Error updating progress: {str(e)}")
 
     def cancel_items(self, item_ids):
         with self.lock:
