@@ -3,5 +3,5 @@ gevent
 gevent-websocket
 flask
 flask_socketio
-yt_dlp==2024.09.27
+yt_dlp==2024.10.07
 pyyaml
