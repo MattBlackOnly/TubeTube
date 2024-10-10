@@ -9,7 +9,7 @@
 - **Custom Locations & Formats:** YAML-based settings.
 - **Mobile Optimized:** Designed for small screens.
 - **Download Options:** Choose between audio or video.
-- **Live Video Support:** Can handle multiple live streams.
+- **Live Video Support:** Supports multiple live streams.
 
 
 ## Docker Compose Configuration
@@ -29,7 +29,7 @@ services:
       - /path/to/podcasts:/data/Podcast
       - /path/to/videos:/data/Video
       - /path/to/config:/config
-      - /path/to/temp:/temp # Optional. Temporary files are deleted on startup.
+      - /path/to/temp:/temp # Optional. All files in the temp directory are deleted on startup.
       - /etc/localtime:/etc/localtime:ro # Optional. Sync time with host.
       - /etc/timezone:/etc/timezone:ro # Optional. Sync timezone with host.
     environment:
@@ -40,7 +40,7 @@ services:
 ```
 
 
-## Folder Configuration
+## Directory Configuration
 
 Create a `settings.yaml` file in the `/path/to/config` directory with the following format:
 
@@ -69,7 +69,7 @@ Video:
 - Replace `/path/to/general`, etc.. with actual paths on your host machine.
 - Ensure the `settings.yaml` file is correctly placed in the `/path/to/config` directory.
 - The volume paths in the `docker-compose.yml` file should match the names specified in the settings.yaml file (e.g., /data/**General**, etc..).
-- You can create as many folder locations as needed in `settings.yaml`, but each must be mapped individually in `docker-compose.yml`.
+- You can create as many directory locations as needed in `settings.yaml`, but each must be mapped individually in `docker-compose.yml`.
 - To use a cookies file, create a `cookies.txt` file and place it in the config directory.
 
 
@@ -86,3 +86,12 @@ Video:
 ![Screenshot](tubetube/static/screenshot.png)
 
 
+## Star History
+
+<a href="https://star-history.com/#mattblackonly/tubetube&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=mattblackonly/tubetube&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=mattblackonly/tubetube&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=mattblackonly/tubetube&type=Date" />
+ </picture>
+</a>
