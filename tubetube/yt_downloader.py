@@ -48,7 +48,7 @@ class DownloadManager:
 
     def cleanup_temp_folder(self):
         try:
-            removable_extensions = (".tmp", ".part", ".webp", ".ytdl", ".m4a", ".mp4", ".m4a")
+            removable_extensions = (".tmp", ".part", ".webp", ".ytdl")
             for file_name in os.listdir(self.temp_folder):
                 file_path = os.path.join(self.temp_folder, file_name)
                 if os.path.isfile(file_path) and file_name.endswith(removable_extensions):
@@ -220,7 +220,7 @@ class DownloadManager:
             raise DownloadCancelledException("Cancelled")
 
         if d["status"] == "downloading":
-            if random.randint(1, 4) != 1:
+            if random.randint(1, 10) != 1:
                 return
 
             with self.lock:
