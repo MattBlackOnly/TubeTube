@@ -29,7 +29,7 @@ services:
       - /path/to/podcasts:/data/Podcast
       - /path/to/videos:/data/Video
       - /path/to/config:/config
-      - /path/to/temp:/temp # Optional. All files in the temp directory are deleted on startup.
+      - /path/to/temp:/temp # Optional. Temp files are deleted on startup.
       - /etc/localtime:/etc/localtime:ro # Optional. Sync time with host.
       - /etc/timezone:/etc/timezone:ro # Optional. Sync timezone with host.
     environment:
