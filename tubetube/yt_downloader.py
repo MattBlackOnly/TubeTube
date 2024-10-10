@@ -4,8 +4,10 @@ import queue
 import logging
 import platform
 import threading
+import random
 import yt_dlp
 from settings import DownloadCancelledException
+from helpers import parse_video_id
 
 
 class DownloadManager:
@@ -46,7 +48,7 @@ class DownloadManager:
 
     def cleanup_temp_folder(self):
         try:
-            removable_extensions = (".tmp", ".part", ".webp", ".ytdl")
+            removable_extensions = (".tmp", ".part", ".webp", ".ytdl", ".m4a", ".mp4", ".m4a")
             for file_name in os.listdir(self.temp_folder):
                 file_path = os.path.join(self.temp_folder, file_name)
                 if os.path.isfile(file_path) and file_name.endswith(removable_extensions):
@@ -62,6 +64,13 @@ class DownloadManager:
 
         if "&list=" in url:
             url = re.sub(r"&list=.*", "", url)
+
+        with self.lock:
+            parsed_identifier = parse_video_id(url)
+            if any(item["url"] == url or item["video_identifier"] == parsed_identifier for item in self.all_items.values()):
+                logging.info(f"URL {url} is already in the queue or being downloaded.")
+                self.socketio.emit("toast", {"title": "Duplicate URL", "body": f"The video '{url}' is already in the queue or being processed."})
+                return
 
         try:
             yt_info_dict = self.ydl_for_parsing.extract_info(url, download=False)
@@ -87,6 +96,7 @@ class DownloadManager:
             download_id = max(self.all_items.keys(), default=-1) + 1
             url = yt_info_dict.get("webpage_url", yt_info_dict.get("url"))
             item = {
+                "video_identifier": yt_info_dict.get("id"),
                 "id": download_id,
                 "title": yt_info_dict.get("title"),
                 "url": url,
@@ -169,16 +179,12 @@ class DownloadManager:
             "no_overwrites": True,
         }
 
-        post_processors = []
+        post_processors = [{"key": "SponsorBlock", "categories": ["sponsor"]}, {"key": "ModifyChapters", "remove_sponsor_segments": ["sponsor"]}]
 
         if item.get("audio_only"):
-            post_processors.append(
-                {
-                    "key": "FFmpegExtractAudio",
-                    "preferredcodec": download_settings.get("audio_ext", "m4a"),
-                    "preferredquality": "0",
-                }
-            )
+            audio_codec = download_settings.get("audio_ext", "m4a")
+            post_processors.extend([{"key": "FFmpegExtractAudio", "preferredcodec": audio_codec, "preferredquality": "0"}])
+
         post_processors.extend([{"key": "FFmpegMetadata"}, {"key": "EmbedThumbnail"}])
 
         if not item.get("audio_only"):
@@ -210,11 +216,14 @@ class DownloadManager:
             self.socketio.emit("update_download_item", {"item": item})
 
     def _progress_hook(self, d, download_id):
-        try:
-            if self.stop_signals[download_id].is_set():
-                raise DownloadCancelledException("Cancelled")
+        if self.stop_signals[download_id].is_set():
+            raise DownloadCancelledException("Cancelled")
 
-            if d["status"] == "downloading":
+        if d["status"] == "downloading":
+            if random.randint(1, 4) != 1:
+                return
+
+            with self.lock:
                 item = self.all_items[download_id]
                 live = d.get("info_dict", {}).get("is_live", False)
                 if live:
@@ -230,15 +239,13 @@ class DownloadManager:
                 item["status"] = "Downloading"
                 self.socketio.emit("update_download_item", {"item": item})
 
-            elif d["status"] == "finished":
+        elif d["status"] == "finished":
+            with self.lock:
                 item = self.all_items[download_id]
                 item["progress"] = "Downloaded"
                 item["status"] = "Processing"
                 logging.info(f'Download finished: {item.get("title")} - processing now')
                 self.socketio.emit("update_download_item", {"item": item})
-
-        except Exception as e:
-            logging.error(f"Error updating progress: {str(e)}")
 
     def cancel_items(self, item_ids):
         with self.lock:
