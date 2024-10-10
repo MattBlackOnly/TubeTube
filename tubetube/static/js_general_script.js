@@ -3,6 +3,7 @@ const folderSelect = document.getElementById('folder-location-select');
 const mediaTypeSwitch = document.getElementById('media-type-switch');
 const downloadButton = document.getElementById('download-button');
 const spinnerBorder = document.getElementById('spinner-border');
+const urlInput = document.getElementById('download-url');
 
 let folderData = {
     audio: {},
@@ -50,8 +51,8 @@ mediaTypeSwitch.addEventListener('change', function () {
 
 folderSelect.addEventListener('change', saveSelection);
 
-downloadButton.addEventListener('click', function () {
-    const url = document.getElementById('download-url');
+function initiateDownload() {
+    const url = urlInput;
 
     if (!url.value.trim()) {
         alert('The URL is empty. Please provide a URL to download.');
@@ -59,7 +60,7 @@ downloadButton.addEventListener('click', function () {
     }
 
     const folderName = folderSelect.value;
-    if (folderName == "Select folder location" || folderName == "") {
+    if (folderName === "Select folder location" || folderName === "") {
         alert('No folder selected. Please select a valid folder.');
         return;
     }
@@ -76,6 +77,15 @@ downloadButton.addEventListener('click', function () {
         url.disabled = false;
         downloadButton.disabled = false;
     }, 2500);
+}
+
+downloadButton.addEventListener('click', initiateDownload);
+
+urlInput.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        initiateDownload();
+    }
 });
 
 socket.on("toast", function (data) {
