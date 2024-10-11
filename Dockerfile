@@ -22,7 +22,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Ensure proper ownership of /config and /data directories
-RUN mkdir -p /config /data /temp && chown -R appuser:appgroup /config /data /temp
+RUN mkdir -p /config /data /temp && \
+    chown -R appuser:appgroup /config /data /temp && \
+    chmod -R 775 /temp
 
 # Copy start script and make it executable
 COPY start.sh /app/start.sh
