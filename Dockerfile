@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the application code
 COPY . .
 
-# Ensure proper ownership of /config and /data directories
+# Ensure proper ownership of /config, /data and /temp directories
 RUN mkdir -p /config /data /temp && \
     chown -R appuser:appgroup /config /data /temp && \
     chmod -R 775 /temp
