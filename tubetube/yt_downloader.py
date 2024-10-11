@@ -219,6 +219,7 @@ class DownloadManager:
 
         finally:
             self.socketio.emit("update_download_item", {"item": item})
+            ydl.close()
 
     def _progress_hook(self, d, download_id):
         if self.stop_signals[download_id].is_set():
