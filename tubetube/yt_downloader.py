@@ -23,6 +23,9 @@ class DownloadManager:
         self.ffmpeg_location = "D:\\" if os_system == "Windows" else "/usr/bin/ffmpeg"
         logging.info(f"FFmpeg location set to: {self.ffmpeg_location}")
 
+        self.verbose_ytdlp = bool(os.getenv("VERBOSE_LOGS", "False").lower() == "true")
+        logging.info(f"Verbose logging for yt-dlp set to: {self.verbose_ytdlp}")
+
         self.thread_count = int(os.getenv("THREAD_COUNT", "4"))
         logging.info(f"Thread Count: {self.thread_count}")
 
@@ -125,7 +128,7 @@ class DownloadManager:
         while True:
             try:
                 download_id = self.download_queue.get()
-                logging.info(f"Processing download ID: {download_id}")
+                logging.info(f"Processing download ID: {download_id} in thread {threading.current_thread().name}")
 
                 if self.all_items[download_id]["skipped"]:
                     self.all_items[download_id]["status"] = "Cancelled"
@@ -169,7 +172,7 @@ class DownloadManager:
             "progress_hooks": [lambda d: self._progress_hook(d, download_id)],
             "ffmpeg_location": self.ffmpeg_location,
             "writethumbnail": True,
-            "quiet": True,
+            "quiet": not self.verbose_ytdlp,
             "extract_flat": True,
             "format": download_format,
             "updatetime": False,
@@ -177,6 +180,7 @@ class DownloadManager:
             "extractor_args": {"youtubetab": {"skip": ["authcheck"]}},
             "paths": {"home": final_path, "temp": self.temp_folder},
             "no_overwrites": True,
+            "verbose": self.verbose_ytdlp,
         }
 
         post_processors = [{"key": "SponsorBlock", "categories": ["sponsor"]}, {"key": "ModifyChapters", "remove_sponsor_segments": ["sponsor"]}]
@@ -196,12 +200,12 @@ class DownloadManager:
         ydl_opts["postprocessors"] = post_processors
 
         try:
-            logging.info(f'Starting Download: {item.get("title")}')
+            logging.info(f'Starting {threading.current_thread().name} Download: {item.get("title")}')
             ydl = yt_dlp.YoutubeDL(ydl_opts)
             result = ydl.download([item["url"]])
             item["progress"] = "Done" if result == 0 else "Incomplete"
             item["status"] = "Complete"
-            logging.info(f'Finished download: {item.get("title")}')
+            logging.info(f'Finished {threading.current_thread().name} Download: {item.get("title")}')
 
         except DownloadCancelledException:
             item["status"] = "Cancelled"
