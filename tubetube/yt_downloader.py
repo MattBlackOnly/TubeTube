@@ -51,7 +51,7 @@ class DownloadManager:
 
     def cleanup_temp_folder(self):
         try:
-            removable_extensions = (".tmp", ".part", ".webp", ".ytdl")
+            removable_extensions = (".tmp", ".part", ".webp", ".ytdl",".png")
             for file_name in os.listdir(self.temp_folder):
                 file_path = os.path.join(self.temp_folder, file_name)
                 if os.path.isfile(file_path) and file_name.endswith(removable_extensions):
@@ -189,6 +189,7 @@ class DownloadManager:
             audio_codec = download_settings.get("audio_ext", "m4a")
             post_processors.extend([{"key": "FFmpegExtractAudio", "preferredcodec": audio_codec, "preferredquality": "0"}])
 
+        post_processors.extend([{"key": "FFmpegThumbnailsConvertor", "format": "png", "when": "before_dl"}])
         post_processors.extend([{"key": "FFmpegMetadata"}, {"key": "EmbedThumbnail"}])
 
         if not item.get("audio_only"):
