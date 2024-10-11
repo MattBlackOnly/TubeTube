@@ -183,14 +183,18 @@ class DownloadManager:
             "verbose": self.verbose_ytdlp,
         }
 
-        post_processors = [{"key": "SponsorBlock", "categories": ["sponsor"]}, {"key": "ModifyChapters", "remove_sponsor_segments": ["sponsor"]}]
+        post_processors = [
+            {"key": "SponsorBlock", "categories": ["sponsor"]},
+            {"key": "ModifyChapters", "remove_sponsor_segments": ["sponsor"]},
+        ]
 
         if item.get("audio_only"):
             audio_codec = download_settings.get("audio_ext", "m4a")
             post_processors.extend([{"key": "FFmpegExtractAudio", "preferredcodec": audio_codec, "preferredquality": "0"}])
 
-        post_processors.extend([{"key": "FFmpegThumbnailsConvertor", "format": "png", "when": "before_dl"}])
-        post_processors.extend([{"key": "FFmpegMetadata"}, {"key": "EmbedThumbnail"}])
+        post_processors.append({"key": "FFmpegThumbnailsConvertor", "format": "png", "when": "before_dl"})
+        post_processors.append({"key": "FFmpegMetadata"})
+        post_processors.append({"key": "EmbedThumbnail"})
 
         if not item.get("audio_only"):
             ydl_opts["merge_output_format"] = "mp4"
