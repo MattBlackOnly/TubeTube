@@ -14,8 +14,8 @@ if [ "$(id -u appuser)" != "$PUID" ] || [ "$(id -g appuser)" != "$PGID" ]; then
     adduser -D -u "$PUID" -G appgroup appuser
 fi
 
-# Ensure ownership of /config and /data is correct
-chown -R appuser:appgroup /config /data
+# Ensure ownership of /config, /data and /temp are correct
+chown -R appuser:appgroup /config /data /temp
 
 # Start the application as appuser
 exec su-exec appuser:appgroup gunicorn tubetube.tubetube:app -c gunicorn_setup.py
