@@ -65,8 +65,8 @@ function initiateDownload() {
         return;
     }
 
-    const audio_only = mediaTypeSwitch.checked;
-    socket.emit('download', { url: url.value, folder_name: folderName, audio_only: audio_only });
+    const audioOnly = mediaTypeSwitch.checked;
+    socket.emit('download', { url: url.value, folder_name: folderName, audio_only: audioOnly });
     url.disabled = true;
     downloadButton.disabled = true;
     spinnerBorder.style.display = 'inline-block';
