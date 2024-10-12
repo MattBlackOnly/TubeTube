@@ -181,6 +181,7 @@ class DownloadManager:
             "paths": {"home": final_path, "temp": self.temp_folder},
             "no_overwrites": True,
             "verbose": self.verbose_ytdlp,
+            "no_mtime": True,
         }
 
         post_processors = [
@@ -193,8 +194,8 @@ class DownloadManager:
             post_processors.extend([{"key": "FFmpegExtractAudio", "preferredcodec": audio_codec, "preferredquality": "0"}])
 
         post_processors.append({"key": "FFmpegThumbnailsConvertor", "format": "png", "when": "before_dl"})
-        post_processors.append({"key": "FFmpegMetadata"})
         post_processors.append({"key": "EmbedThumbnail"})
+        post_processors.append({"key": "FFmpegMetadata"})
 
         if not item.get("audio_only"):
             ydl_opts["merge_output_format"] = "mp4"
