@@ -195,7 +195,6 @@ class DownloadManager:
 
         post_processors.append({"key": "FFmpegThumbnailsConvertor", "format": "png", "when": "before_dl"})
         post_processors.append({"key": "EmbedThumbnail"})
-        post_processors.append({"key": "FFmpegMetadata"})
 
         if not item.get("audio_only"):
             ydl_opts["merge_output_format"] = "mp4"
