@@ -13,3 +13,9 @@ def parse_video_id(url):
         if match:
             return match.group(1)
     return None
+
+def trim_description(info_dict):
+    description = info_dict.get("description", "")
+    max_length = 250
+    if len(description) > max_length:
+        info_dict["description"] = description[:max_length] + "..."
