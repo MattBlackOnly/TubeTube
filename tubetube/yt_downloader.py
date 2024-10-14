@@ -7,7 +7,7 @@ import threading
 import random
 import yt_dlp
 from settings import DownloadCancelledException
-from helpers import parse_video_id
+from helpers import parse_video_id, trim_description
 
 
 class DownloadManager:
@@ -182,6 +182,7 @@ class DownloadManager:
             "no_overwrites": True,
             "verbose": self.verbose_ytdlp,
             "no_mtime": True,
+            "postprocessor_hooks": [trim_description],
         }
 
         post_processors = [
@@ -195,6 +196,7 @@ class DownloadManager:
 
         post_processors.append({"key": "FFmpegThumbnailsConvertor", "format": "png", "when": "before_dl"})
         post_processors.append({"key": "EmbedThumbnail"})
+        post_processors.append({"key": "FFmpegMetadata"})
 
         if not item.get("audio_only"):
             ydl_opts["merge_output_format"] = "mp4"
