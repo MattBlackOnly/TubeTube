@@ -1,0 +1,30 @@
+name: Publish to Testing Branch
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish-to-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PAT }}
+
+      - name: Build and Push Docker Image for Testing
+        run: |
+          echo "Publishing to :testing image"
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --tag ghcr.io/mattblackonly/tubetube:testing \
+            --push .
