@@ -1,8 +1,9 @@
 name: Publish to Testing Branch
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - 'testing'
 
 jobs:
   publish-to-testing:
