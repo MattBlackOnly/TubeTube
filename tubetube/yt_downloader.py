@@ -7,7 +7,7 @@ import threading
 import random
 import yt_dlp
 from settings import DownloadCancelledException
-from helpers import parse_video_id
+import helpers
 
 
 class DownloadManager:
@@ -72,7 +72,7 @@ class DownloadManager:
             url = re.sub(r"&list=.*", "", url)
 
         with self.lock:
-            parsed_identifier = parse_video_id(url)
+            parsed_identifier = helpers.parse_video_id(url)
             if any(item["url"] == url or item["video_identifier"] == parsed_identifier for item in self.all_items.values()):
                 logging.info(f"URL {url} is already in the queue or being downloaded.")
                 self.socketio.emit("toast", {"title": "Duplicate URL", "body": f"The video '{url}' is already in the queue or being processed."})
@@ -199,16 +199,7 @@ class DownloadManager:
         post_processors.append({"key": "FFmpegThumbnailsConvertor", "format": "png", "when": "before_dl"})
         post_processors.append({"key": "EmbedThumbnail"})
         if self.trim_metadata:
-            post_processors.append(
-                {
-                    "key": "MetadataParser",
-                    "when": "pre_process",
-                    "actions": [
-                        (yt_dlp.postprocessor.MetadataParserPP.Actions.INTERPRET, "description", r"(?P<existing_desc>.+)"),
-                        (yt_dlp.postprocessor.MetadataParserPP.Actions.REPLACE, "description", r"(?P<existing_desc>.+)", r"\g<existing_desc>[:250]"),
-                    ],
-                }
-            )
+            post_processors.append(helpers.TrimDescriptionPP(), when="before_dl")
         post_processors.append({"key": "FFmpegMetadata"})
 
         if not item.get("audio_only"):
