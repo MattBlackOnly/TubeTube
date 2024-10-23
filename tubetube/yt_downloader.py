@@ -184,6 +184,16 @@ class DownloadManager:
             "no_mtime": True,
         }
 
+        ydl_opts["parse_metadata"] = [
+            "description:(?P<meta_description>.*)",
+            "synopsis:(?P<meta_synopsis>.*)",
+        ]
+
+        ydl_opts["replace_in_metadata"] = [
+            "meta_description:Test Description",
+            "meta_synopsis:Synopsis Example",
+        ]
+
         post_processors = [
             {"key": "SponsorBlock", "categories": ["sponsor"]},
             {"key": "ModifyChapters", "remove_sponsor_segments": ["sponsor"]},
@@ -196,15 +206,6 @@ class DownloadManager:
         post_processors.append({"key": "FFmpegThumbnailsConvertor", "format": "png", "when": "before_dl"})
         post_processors.append({"key": "EmbedThumbnail"})
         post_processors.append({"key": "FFmpegMetadata"})
-        ydl_opts["parse_metadata"] = [
-            "description:(?P<meta_description>.*)",
-            "synopsis:0",
-        ]
-
-        ydl_opts["replace_in_metadata"] = [
-            "meta_description:^(.{150}).*?$\\1",
-            "meta_synopsis:^$",
-        ]
 
         if not item.get("audio_only"):
             ydl_opts["merge_output_format"] = "mp4"
