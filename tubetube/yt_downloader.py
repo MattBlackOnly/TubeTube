@@ -184,14 +184,9 @@ class DownloadManager:
             "no_mtime": True,
         }
 
-        ydl_opts["parse_metadata"] = [
-            "description:(?P<meta_description>.*)",
-            "synopsis:(?P<meta_synopsis>.*)",
-        ]
-
         ydl_opts["replace_in_metadata"] = [
-            "meta_description:Test Description",
-            "meta_synopsis:Synopsis Example",
+            "description:Test Description",
+            "synopsis:Synopsis Example",
         ]
 
         post_processors = [
