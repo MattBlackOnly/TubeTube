@@ -7,7 +7,7 @@ import threading
 import random
 import yt_dlp
 from settings import DownloadCancelledException
-from helpers import parse_video_id
+import helpers
 
 
 class DownloadManager:
@@ -25,6 +25,9 @@ class DownloadManager:
 
         self.verbose_ytdlp = bool(os.getenv("VERBOSE_LOGS", "False").lower() == "true")
         logging.info(f"Verbose logging for yt-dlp set to: {self.verbose_ytdlp}")
+
+        self.trim_metadata = bool(os.getenv("TRIM_METADATA", "False").lower() == "true")
+        logging.info(f"Trim Metadata set to: {self.trim_metadata}")
 
         self.thread_count = int(os.getenv("THREAD_COUNT", "4"))
         logging.info(f"Thread Count: {self.thread_count}")
@@ -69,7 +72,7 @@ class DownloadManager:
             url = re.sub(r"&list=.*", "", url)
 
         with self.lock:
-            parsed_identifier = parse_video_id(url)
+            parsed_identifier = helpers.parse_video_id(url)
             if any(item["url"] == url or item["video_identifier"] == parsed_identifier for item in self.all_items.values()):
                 logging.info(f"URL {url} is already in the queue or being downloaded.")
                 self.socketio.emit("toast", {"title": "Duplicate URL", "body": f"The video '{url}' is already in the queue or being processed."})
@@ -208,6 +211,8 @@ class DownloadManager:
         try:
             logging.info(f'Starting {threading.current_thread().name} Download: {item.get("title")}')
             ydl = yt_dlp.YoutubeDL(ydl_opts)
+            if self.trim_metadata:
+                ydl.add_post_processor(helpers.TrimDescriptionPP(), when="before_dl")
             result = ydl.download([item["url"]])
             item["progress"] = "Done" if result == 0 else "Incomplete"
             item["status"] = "Complete"

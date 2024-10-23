@@ -1,4 +1,5 @@
 import re
+import yt_dlp
 
 
 def parse_video_id(url):
@@ -13,3 +14,19 @@ def parse_video_id(url):
         if match:
             return match.group(1)
     return None
+
+
+class TrimDescriptionPP(yt_dlp.postprocessor.PostProcessor):
+    def run(self, info):
+        description = info.get("description", "")
+
+        if description:
+            trimmed_description = description[:250]
+            self.to_screen(f"Original description length: {len(description)}")
+            self.to_screen(f"Trimmed description to 250 chars: {trimmed_description}")
+
+            info["description"] = trimmed_description
+        else:
+            self.to_screen("No description found to trim.")
+
+        return [], info
