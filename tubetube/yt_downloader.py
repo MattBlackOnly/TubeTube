@@ -7,7 +7,7 @@ import threading
 import random
 import yt_dlp
 from settings import DownloadCancelledException
-from helpers import parse_video_id, trim_description
+from helpers import parse_video_id
 
 
 class DownloadManager:
@@ -182,7 +182,6 @@ class DownloadManager:
             "no_overwrites": True,
             "verbose": self.verbose_ytdlp,
             "no_mtime": True,
-            "postprocessor_hooks": [trim_description],
         }
 
         post_processors = [
@@ -196,14 +195,18 @@ class DownloadManager:
 
         post_processors.append({"key": "FFmpegThumbnailsConvertor", "format": "png", "when": "before_dl"})
         post_processors.append({"key": "EmbedThumbnail"})
-        post_processors.append({"key": "FFmpegMetadata"})
-        ydl_opts["postprocessor_args"] = [
-        "--parse-metadata", ":(?P<meta_description>)",
-        "--parse-metadata", ":(?P<meta_synopsis>)",
-        "--replace-in-metadata", "meta_description:^(.{250}).*?$\\1",
-        "--replace-in-metadata", "meta_synopsis:^(.{250}).*?$\\1",
-        ]  
-        
+        post_processors.append(
+            {
+                "key": "FFmpegMetadata",
+                "add_metadata": True,
+                "parse_metadata": [{"key": "meta_description", "pattern": ":(?P<meta_description>)"}, {"key": "meta_synopsis", "pattern": ":(?P<meta_synopsis>)"}],
+                "replace_metadata": [
+                    {"field": "meta_description", "pattern": "^(.{100}).*?$", "replace": "\\1"},
+                    {"field": "meta_synopsis", "pattern": "^(.{100}).*?$", "replace": "\\1"},
+                ],
+            }
+        )
+
         if not item.get("audio_only"):
             ydl_opts["merge_output_format"] = "mp4"
 
