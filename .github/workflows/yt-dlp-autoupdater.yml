@@ -78,7 +78,7 @@ jobs:
     - name: Increment release
       id: increment_release
       run: |
-        latest_tag=$(git tag --list | sed 's/^v//' | sort -V | tail -n 1 || echo "0.0.0")
+        latest_tag=$(git tag --list | grep -v 'testing' | sed 's/^v//' | sort -V | tail -n 1 || echo "0.0.0")
         major=$(echo $latest_tag | cut -d. -f1)
         minor=$(echo $latest_tag | cut -d. -f2)
         patch=$(echo $latest_tag | cut -d. -f3)
