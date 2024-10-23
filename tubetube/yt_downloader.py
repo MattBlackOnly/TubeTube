@@ -27,7 +27,7 @@ class DownloadManager:
         logging.info(f"Verbose logging for yt-dlp set to: {self.verbose_ytdlp}")
 
         self.trim_metadata = bool(os.getenv("TRIM_METADATA", "False").lower() == "true")
-        logging.info(f"Trim Metadata Trim set to: {self.trim_metadata}")
+        logging.info(f"Trim Metadata set to: {self.trim_metadata}")
 
         self.thread_count = int(os.getenv("THREAD_COUNT", "4"))
         logging.info(f"Thread Count: {self.thread_count}")
@@ -204,7 +204,7 @@ class DownloadManager:
                     "key": "MetadataParser",
                     "when": "pre_process",
                     "actions": [
-                        (yt_dlp.postprocessor.MetadataParserPP.Actions.INTERPRET, "description", "existing_description"),
+                        (yt_dlp.postprocessor.MetadataParserPP.Actions.INTERPRET, "description", r"(?s)(?P<existing_description>.+)"),
                         (yt_dlp.postprocessor.MetadataParserPP.Actions.REPLACE, "description", r"(.{250}).*", r"\1"),
                     ],
                 }
