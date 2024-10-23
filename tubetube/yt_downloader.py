@@ -204,7 +204,8 @@ class DownloadManager:
                     "key": "MetadataParser",
                     "when": "pre_process",
                     "actions": [
-                        (yt_dlp.postprocessor.MetadataParserPP.Actions.REPLACE, "description", r"(.{250}).*", r"\1"),
+                        (yt_dlp.postprocessor.MetadataParserPP.Actions.INTERPRET, "description", r"(?P<existing_desc>.+)"),
+                        (yt_dlp.postprocessor.MetadataParserPP.Actions.REPLACE, "description", r"(?P<existing_desc>.+)", r"\g<existing_desc>[:250]"),
                     ],
                 }
             )
