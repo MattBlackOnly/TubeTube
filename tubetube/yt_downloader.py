@@ -198,8 +198,6 @@ class DownloadManager:
 
         post_processors.append({"key": "FFmpegThumbnailsConvertor", "format": "png", "when": "before_dl"})
         post_processors.append({"key": "EmbedThumbnail"})
-        if self.trim_metadata:
-            post_processors.append({"class": helpers.TrimDescriptionPP(), "when": "before_dl"})
         post_processors.append({"key": "FFmpegMetadata"})
 
         if not item.get("audio_only"):
@@ -213,6 +211,8 @@ class DownloadManager:
         try:
             logging.info(f'Starting {threading.current_thread().name} Download: {item.get("title")}')
             ydl = yt_dlp.YoutubeDL(ydl_opts)
+            if self.trim_metadata:
+                ydl.add_post_processor(helpers.TrimDescriptionPP(), when="before_dl")
             result = ydl.download([item["url"]])
             item["progress"] = "Done" if result == 0 else "Incomplete"
             item["status"] = "Complete"
