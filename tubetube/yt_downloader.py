@@ -199,7 +199,7 @@ class DownloadManager:
         post_processors.append({"key": "FFmpegThumbnailsConvertor", "format": "png", "when": "before_dl"})
         post_processors.append({"key": "EmbedThumbnail"})
         if self.trim_metadata:
-            post_processors.append({"key": "TrimDescription", "class": helpers.TrimDescriptionPP(), "when": "before_dl"})
+            post_processors.append({"class": helpers.TrimDescriptionPP(), "when": "before_dl"})
         post_processors.append({"key": "FFmpegMetadata"})
 
         if not item.get("audio_only"):
