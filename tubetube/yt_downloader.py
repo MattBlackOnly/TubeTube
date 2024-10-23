@@ -198,12 +198,12 @@ class DownloadManager:
         post_processors.append({"key": "FFmpegMetadata"})
         ydl_opts["parse_metadata"] = [
             "description:(?P<meta_description>.*)",
-            "synopsis:(?P<meta_synopsis>.*)",
+            "synopsis:0",
         ]
 
         ydl_opts["replace_in_metadata"] = [
-            "meta_description:^(.{250}).*?$\\1",
-            "meta_synopsis:^(.{250}).*?$\\1",
+            "meta_description:^(.{150}).*?$\\1",
+            "meta_synopsis:^$",
         ]
 
         if not item.get("audio_only"):
