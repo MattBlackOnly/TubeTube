@@ -184,10 +184,6 @@ class DownloadManager:
             "no_mtime": True,
         }
 
-        ydl_opts["replace_in_metadata"] = [
-            "description:Test Description",
-        ]
-
         post_processors = [
             {"key": "SponsorBlock", "categories": ["sponsor"]},
             {"key": "ModifyChapters", "remove_sponsor_segments": ["sponsor"]},
@@ -199,6 +195,16 @@ class DownloadManager:
 
         post_processors.append({"key": "FFmpegThumbnailsConvertor", "format": "png", "when": "before_dl"})
         post_processors.append({"key": "EmbedThumbnail"})
+        post_processors.append(
+            {
+                "key": "MetadataParser",
+                "when": "pre_process",
+                "actions": [
+                    (yt_dlp.postprocessor.MetadataParserPP.Actions.INTERPRET, "description", r"(?s)(?P<meta_comment>.+)"),
+                    (yt_dlp.postprocessor.MetadataParserPP.Actions.REPLACE, "description", r".*", "test desc"),
+                ],
+            }
+        )
         post_processors.append({"key": "FFmpegMetadata"})
 
         if not item.get("audio_only"):
