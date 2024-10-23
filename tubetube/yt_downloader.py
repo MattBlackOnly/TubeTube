@@ -186,7 +186,6 @@ class DownloadManager:
 
         ydl_opts["replace_in_metadata"] = [
             "description:Test Description",
-            "synopsis:Synopsis Example",
         ]
 
         post_processors = [
