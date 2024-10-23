@@ -26,6 +26,9 @@ class DownloadManager:
         self.verbose_ytdlp = bool(os.getenv("VERBOSE_LOGS", "False").lower() == "true")
         logging.info(f"Verbose logging for yt-dlp set to: {self.verbose_ytdlp}")
 
+        self.trim_metadata = bool(os.getenv("TRIM_METADATA", "False").lower() == "true")
+        logging.info(f"Trim Metadata Trim set to: {self.trim_metadata}")
+
         self.thread_count = int(os.getenv("THREAD_COUNT", "4"))
         logging.info(f"Thread Count: {self.thread_count}")
 
@@ -195,16 +198,17 @@ class DownloadManager:
 
         post_processors.append({"key": "FFmpegThumbnailsConvertor", "format": "png", "when": "before_dl"})
         post_processors.append({"key": "EmbedThumbnail"})
-        post_processors.append(
-            {
-                "key": "MetadataParser",
-                "when": "pre_process",
-                "actions": [
-                    (yt_dlp.postprocessor.MetadataParserPP.Actions.INTERPRET, "description", r"(?s)(?P<meta_comment>.+)"),
-                    (yt_dlp.postprocessor.MetadataParserPP.Actions.REPLACE, "description", r".*", "test desc"),
-                ],
-            }
-        )
+        if self.trim_metadata:
+            post_processors.append(
+                {
+                    "key": "MetadataParser",
+                    "when": "pre_process",
+                    "actions": [
+                        (yt_dlp.postprocessor.MetadataParserPP.Actions.INTERPRET, "description", "existing_description"),
+                        (yt_dlp.postprocessor.MetadataParserPP.Actions.REPLACE, "description", r"(.{250}).*", r"\1"),
+                    ],
+                }
+            )
         post_processors.append({"key": "FFmpegMetadata"})
 
         if not item.get("audio_only"):
