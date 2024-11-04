@@ -33,7 +33,7 @@ jobs:
     - name: Extract yt-dlp version from requirements.txt
       id: extract_version
       run: |
-        current_version=$(grep -oP "(?<=yt_dlp[default]==)\d+(\.\d+)+" requirements.txt || echo "0.0")
+        current_version=$(grep -oP "(?<=yt_dlp\[default\]==)\d+(\.\d+)+" requirements.txt || echo "0.0")
         echo "Version in requirements.txt: $current_version"
         echo "current_version=$current_version" >> $GITHUB_ENV
 
