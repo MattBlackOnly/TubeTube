@@ -35,7 +35,7 @@ class DownloadManager:
         for i in range(self.thread_count):
             worker = threading.Thread(target=self._process_queue, daemon=True, name=f"Worker-{i}")
             worker.start()
-            logging.info(f"Started worker thread: {worker.name}")
+            logging.info(f"Started thread: {worker.name}")
 
         parsing_opts = {
             "quiet": True,
