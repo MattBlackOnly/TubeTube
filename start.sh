@@ -1,5 +1,34 @@
 #!/bin/sh
 
+# ASCII Art
+echo "  TTTTT  U   U  BBBBB   EEEEE   TTTTT  U   U  BBBBB   EEEEE"
+echo "    T    U   U  B    B  E        T    U   U  B    B  E    "
+echo "    T    U   U  BBBBB   EEEE     T    U   U  BBBBB   EEEE "
+echo "    T    U   U  B    B  E        T    U   U  B    B  E    "
+echo "    T     UUU   BBBBB   EEEEE    T     UUU   BBBBB   EEEEE"
+echo "------------------------------------------------"
+echo "TUBETUBE - YouTube Downloader using yt-dlp"
+echo -e "\e[1;32mDesigned by MattBlackOnly\e[0m" 
+echo "------------------------------------------------"
+
+# Log versions
+if [ -z "$TUBETUBE_VERSION" ]; then
+    echo "TUBETUBE_VERSION environment variable is not set."
+else
+    echo "Tubetube version: ${TUBETUBE_VERSION}"
+fi
+
+if [ -f "requirements.txt" ]; then
+    YT_DLP_VERSION=$(awk -F'==' '/yt_dlp\[default\]/{print $2}' requirements.txt)
+    if [ -z "$YT_DLP_VERSION" ]; then
+        echo "yt-dlp version not found in requirements.txt"
+    else
+        echo "Starting application with yt-dlp version: $YT_DLP_VERSION"
+    fi
+else
+    echo "requirements.txt not found."
+fi
+
 # Default values for PUID and PGID
 PUID=${PUID:-1000}
 PGID=${PGID:-1000}

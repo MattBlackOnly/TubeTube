@@ -7,27 +7,27 @@ RUN apk update && apk add --no-cache ffmpeg su-exec
 RUN addgroup -g 1000 appgroup && adduser -D -u 1000 -G appgroup appuser
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONPATH=/app/tubetube
+ARG TUBETUBE_VERSION
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app/tubetube \
+    TUBETUBE_VERSION=${TUBETUBE_VERSION}
 
 # Set the working directory
 WORKDIR /app
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
 # Copy the application code
 COPY . .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Ensure proper ownership of /config, /data and /temp directories
 RUN mkdir -p /config /data /temp && \
     chown -R appuser:appgroup /config /data /temp && \
     chmod -R 775 /temp
 
-# Copy start script and make it executable
-COPY start.sh /app/start.sh
+# Make script executable
 RUN chmod +x /app/start.sh
 
 # Expose the application port
