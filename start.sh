@@ -23,7 +23,7 @@ if [ -f "requirements.txt" ]; then
     if [ -z "$YT_DLP_VERSION" ]; then
         echo "yt-dlp version not found in requirements.txt"
     else
-        echo "Starting application with yt-dlp version: $YT_DLP_VERSION"
+        echo "yt-dlp version: $YT_DLP_VERSION"
     fi
 else
     echo "requirements.txt not found."
@@ -44,7 +44,9 @@ if [ "$(id -u appuser)" != "$PUID" ] || [ "$(id -g appuser)" != "$PGID" ]; then
 fi
 
 # Ensure ownership of /config, /data and /temp are correct
+echo "Setting up directories..."
 chown -R appuser:appgroup /config /data /temp
 
 # Start the application as appuser
+echo "Starting TubeTube..."
 exec su-exec appuser:appgroup gunicorn tubetube.tubetube:app -c gunicorn_setup.py

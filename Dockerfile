@@ -20,8 +20,9 @@ WORKDIR /app
 COPY . .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
+RUN pip install --upgrade pip --root-user-action=ignore && \
+    pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
+    
 # Ensure proper ownership of /config, /data and /temp directories
 RUN mkdir -p /config /data /temp && \
     chown -R appuser:appgroup /config /data /temp && \
