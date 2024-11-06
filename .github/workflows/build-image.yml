@@ -33,8 +33,10 @@ jobs:
       
       - name: Build and Push Docker Image
         run: |
+          VERSION="${{ github.event.release.tag_name }}" 
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
             --tag ghcr.io/mattblackonly/tubetube:latest \
             --tag ghcr.io/mattblackonly/tubetube:${{ env.VERSION }} \
+            --build-arg TUBETUBE_VERSION=${VERSION} \
             --push .
