@@ -188,7 +188,7 @@ class DownloadManager:
             "no_overwrites": True,
             "verbose": self.verbose_ytdlp,
             "no_mtime": True,
-            "format_sort": ["quality", "size", f"lang:{self.selected_language}", "acodec:aac", "vcodec:vp9", "vext:mp4"],
+            "format_sort": [f"lang:{self.selected_language}", "acodec:aac", "quality", "size", "vcodec:vp9", "vext:mp4"],
         }
 
         post_processors = [
