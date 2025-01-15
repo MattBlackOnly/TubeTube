@@ -29,6 +29,9 @@ class DownloadManager:
         self.trim_metadata = bool(os.getenv("TRIM_METADATA", "False").lower() == "true")
         logging.info(f"Trim Metadata set to: {self.trim_metadata}")
 
+        self.selected_language = os.getenv("SELECTED_LANGUAGE", "en")
+        logging.info(f"Selected Language: {self.selected_language}")
+
         self.thread_count = int(os.getenv("THREAD_COUNT", "4"))
         logging.info(f"Thread Count: {self.thread_count}")
 
@@ -185,7 +188,7 @@ class DownloadManager:
             "no_overwrites": True,
             "verbose": self.verbose_ytdlp,
             "no_mtime": True,
-            "format_sort": ["vcodec:vp9", "vext:mp4", "size", "acodec:aac"],
+            "format_sort": [f"lang:{self.selected_language}", "vcodec:vp9", "vext:mp4", "size", "acodec:aac"],
         }
 
         post_processors = [
