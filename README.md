@@ -73,6 +73,21 @@ Video:
 - To use a cookies file, create a `cookies.txt` file and place it in the config directory.
 
 
+## Environment Variable Configuration
+
+Customize the behavior of **TubeTube** by setting the following environment variables in your `docker-compose.yml` file:
+
+```yaml
+environment:
+  - VERBOSE_LOGS=false        # Enable verbose logging for yt-dlp (default: false)
+  - TRIM_METADATA=false       # Trim metadata from files (default: false)
+  - PREFFERED_LANGUAGE=en     # Desired language for downloads (default: en)
+  - PREFERRED_AUDIO_CODEC=aac # Desired audio codec (default: aac)
+  - PREFERRED_VIDEO_CODEC=vp9 # Desired video codec (default: vp9)
+  - PREFERRED_VIDEO_EXT=mp4   # Preferred video file extension (default: mp4)
+  - THREAD_COUNT=4            # Number of threads for processing (default: 4)
+```
+
 ## Screenshots
 
 ### Phone (Dark Mode)

@@ -29,8 +29,17 @@ class DownloadManager:
         self.trim_metadata = bool(os.getenv("TRIM_METADATA", "False").lower() == "true")
         logging.info(f"Trim Metadata set to: {self.trim_metadata}")
 
-        self.selected_language = os.getenv("SELECTED_LANGUAGE", "en")
-        logging.info(f"Selected Language: {self.selected_language}")
+        self.preffered_language = os.getenv("PREFERRED_LANGUAGE", "en")
+        logging.info(f"Preferred Language: {self.preffered_language}")
+
+        self.preferred_audio_codec = os.getenv("PREFERRED_AUDIO_CODEC", "aac")
+        logging.info(f"Preferred Audio Codec: {self.preferred_audio_codec}")
+
+        self.preferred_video_codec = os.getenv("PREFERRED_VIDEO_CODEC", "vp9")
+        logging.info(f"Preferred Video Codec: {self.preferred_video_codec}")
+
+        self.preferred_video_ext = os.getenv("PREFERRED_VIDEO_EXT", "mp4")
+        logging.info(f"Preferred Video Ext: {self.preferred_video_ext}")
 
         self.thread_count = int(os.getenv("THREAD_COUNT", "4"))
         logging.info(f"Thread Count: {self.thread_count}")
@@ -188,7 +197,7 @@ class DownloadManager:
             "no_overwrites": True,
             "verbose": self.verbose_ytdlp,
             "no_mtime": True,
-            "format_sort": [f"lang:{self.selected_language}", "acodec:aac", "quality", "size", "vcodec:vp9", "vext:mp4"],
+            "format_sort": [f"lang:{self.preffered_language}", f"acodec:{self.preferred_audio_codec}", "quality", "size", f"vcodec:{self.preferred_video_codec}", f"vext:{self.preferred_video_ext}"],
         }
 
         post_processors = [
@@ -197,8 +206,8 @@ class DownloadManager:
         ]
 
         if item.get("audio_only"):
-            audio_codec = download_settings.get("audio_ext", "m4a")
-            post_processors.extend([{"key": "FFmpegExtractAudio", "preferredcodec": audio_codec, "preferredquality": "0"}])
+            audio_ext = download_settings.get("audio_ext", "m4a")
+            post_processors.extend([{"key": "FFmpegExtractAudio", "preferredcodec": audio_ext, "preferredquality": "0"}])
 
         post_processors.append({"key": "FFmpegThumbnailsConvertor", "format": "png", "when": "before_dl"})
         post_processors.append({"key": "EmbedThumbnail"})
