@@ -33,7 +33,6 @@ services:
       - /etc/localtime:/etc/localtime:ro # Optional. Sync time with host.
       - /etc/timezone:/etc/timezone:ro # Optional. Sync timezone with host.
     environment:
-      - THREAD_COUNT=1
       - PUID=1000
       - PGID=1000
     restart: unless-stopped
@@ -79,6 +78,8 @@ Customize the behavior of **TubeTube** by setting the following environment vari
 
 ```yaml
 environment:
+  - PUID=1000                 # User ID for permissions (default: 1000)
+  - PGID=1000                 # Group ID for permissions (default: 1000)
   - VERBOSE_LOGS=false        # Enable verbose logging for yt-dlp (default: false)
   - TRIM_METADATA=false       # Trim metadata from files (default: false)
   - PREFFERED_LANGUAGE=en     # Desired language for downloads (default: en)
