@@ -29,8 +29,8 @@ class DownloadManager:
         self.trim_metadata = bool(os.getenv("TRIM_METADATA", "False").lower() == "true")
         logging.info(f"Trim Metadata set to: {self.trim_metadata}")
 
-        self.preffered_language = os.getenv("PREFERRED_LANGUAGE", "en")
-        logging.info(f"Preferred Language: {self.preffered_language}")
+        self.preferred_language = os.getenv("PREFERRED_LANGUAGE", "en")
+        logging.info(f"Preferred Language: {self.preferred_language}")
 
         self.preferred_audio_codec = os.getenv("PREFERRED_AUDIO_CODEC", "aac")
         logging.info(f"Preferred Audio Codec: {self.preferred_audio_codec}")
@@ -197,7 +197,7 @@ class DownloadManager:
             "no_overwrites": True,
             "verbose": self.verbose_ytdlp,
             "no_mtime": True,
-            "format_sort": [f"lang:{self.preffered_language}", f"acodec:{self.preferred_audio_codec}", "quality", "size", f"vcodec:{self.preferred_video_codec}", f"vext:{self.preferred_video_ext}"],
+            "format_sort": [f"lang:{self.preferred_language}", f"acodec:{self.preferred_audio_codec}", "quality", "size", f"vcodec:{self.preferred_video_codec}", f"vext:{self.preferred_video_ext}"],
         }
 
         post_processors = [
