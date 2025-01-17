@@ -85,7 +85,7 @@ environment:
   - PREFERRED_LANGUAGE=en     # Desired language for downloads (default: en)
   - PREFERRED_AUDIO_CODEC=aac # Desired audio codec (default: aac)
   - PREFERRED_VIDEO_CODEC=vp9 # Desired video codec (default: vp9)
-  - PREFERRED_VIDEO_EXT=mp4   # Preferred video file extension (default: mp4)
+  - PREFERRED_VIDEO_EXT=mp4   # Desired video file extension (default: mp4)
   - THREAD_COUNT=4            # Number of threads for processing (default: 4)
 ```
 
