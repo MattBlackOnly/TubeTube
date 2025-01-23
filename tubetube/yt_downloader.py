@@ -30,7 +30,7 @@ class DownloadManager:
         logging.info(f"Trim Metadata set to: {self.trim_metadata}")
 
         self.preferred_language = os.getenv("PREFERRED_LANGUAGE", "en")
-        logging.info(f"Preferred Language: {self.preferred_language}")
+        logging.info(f"Preferred Audio Language: {self.preferred_language}")
 
         self.preferred_audio_codec = os.getenv("PREFERRED_AUDIO_CODEC", "aac")
         logging.info(f"Preferred Audio Codec: {self.preferred_audio_codec}")
@@ -40,6 +40,34 @@ class DownloadManager:
 
         self.preferred_video_ext = os.getenv("PREFERRED_VIDEO_EXT", "mp4")
         logging.info(f"Preferred Video Ext: {self.preferred_video_ext}")
+
+        self.embed_subs = bool(os.getenv("EMBED_SUBS", "False").lower() == "true")
+        logging.info(f"Embed Subtitles: {self.embed_subs}")
+
+        self.write_subs = bool(os.getenv("WRITE_SUBS", "False").lower() == "true")
+        logging.info(f"Write Subtitles: {self.write_subs}")
+
+        self.allow_auto_subs = bool(os.getenv("ALLOW_AUTO_SUBS", "True").lower() == "true")
+        logging.info(f"Automatic Subtitles Enabled: {self.allow_auto_subs}")
+
+        self.subtitle_format = os.getenv("SUBTITLE_FORMAT", "vtt")
+        logging.info(f"Subtitle Format: {self.subtitle_format}")
+
+        subtitle_langs_env = os.getenv("SUBTITLE_LANGUAGES", "en")
+        self.subtitle_languages = [lang.strip() for lang in subtitle_langs_env.split(",") if lang.strip()]
+        logging.info(f"Subtitle Languages: {self.subtitle_languages}")
+
+        self.subtitle_config = {
+            "subtitlesformat": "best",
+            "subtitleslangs": self.subtitle_languages,
+            "writeautomaticsub": self.allow_auto_subs,
+            "writesubtitles": self.write_subs,
+        }
+        self.subtitle_pps = []
+        if self.write_subs:
+            self.subtitle_pps.append({"key": "FFmpegSubtitlesConvertor", "format": self.subtitle_format, "when": "before_dl"})
+        if self.embed_subs:
+            self.subtitle_pps.append({"key": "FFmpegEmbedSubtitle", "already_have_subtitle": self.write_subs})
 
         self.thread_count = int(os.getenv("THREAD_COUNT", "4"))
         logging.info(f"Thread Count: {self.thread_count}")
@@ -66,7 +94,7 @@ class DownloadManager:
 
     def cleanup_temp_folder(self):
         try:
-            removable_extensions = (".tmp", ".part", ".webp", ".ytdl", ".png")
+            removable_extensions = (".tmp", ".part", ".webp", ".ytdl", ".png", f".{self.subtitle_format}")
             for file_name in os.listdir(self.temp_folder):
                 file_path = os.path.join(self.temp_folder, file_name)
                 if os.path.isfile(file_path) and file_name.endswith(removable_extensions):
@@ -218,6 +246,10 @@ class DownloadManager:
 
         if self.cookies_file:
             ydl_opts["cookiefile"] = self.cookies_file
+
+        if self.write_subs or self.embed_subs:
+            ydl_opts.update(self.subtitle_config)
+            post_processors.extend(self.subtitle_pps)
 
         ydl_opts["postprocessors"] = post_processors
 
