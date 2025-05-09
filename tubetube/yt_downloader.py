@@ -83,7 +83,7 @@ class DownloadManager:
             "extract_flat": True,
             "ignore_no_formats_error": True,
             "force_generic_extractor": False,
-            "cachedir": True,
+            "cachedir": "/temp/cache",
             "noprogress": True,
             "no_warnings": True,
         }
