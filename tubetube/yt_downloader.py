@@ -206,6 +206,7 @@ class DownloadManager:
             download_format = f"{video_format_id}+{audio_format_id}/bestvideo+bestaudio/best"
 
         item_title = re.sub(r'[<>:"/\\|?*]', "-", item.get("title"))
+        item_title = helpers.create_unique_file(item_title)
         final_path = f"/data/{folder_name}"
 
         ydl_opts = {

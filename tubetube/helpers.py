@@ -1,5 +1,7 @@
+import os
 import re
 import yt_dlp
+from datetime import datetime
 
 
 def parse_video_id(url):
@@ -14,6 +16,19 @@ def parse_video_id(url):
         if match:
             return match.group(1)
     return None
+
+# Generate a unique filename using timestamp
+def create_unique_file(dir_name,file_name):
+    full_path = os.path.join(dir_name, file_name)
+    if not os.path.exists(full_path):
+        return file_name
+    # Get current timestamp in seconds since epoch
+    timestamp = str(datetime.timestamp(datetime.now()))
+    
+    # Create a filename with base name and timestamp
+    unique_file_name = f"{file_name}_{timestamp}"
+    
+    return unique_file_name
 
 
 class TrimDescriptionPP(yt_dlp.postprocessor.PostProcessor):
