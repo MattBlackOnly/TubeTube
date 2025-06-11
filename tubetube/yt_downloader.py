@@ -211,7 +211,7 @@ class DownloadManager:
         ydl_opts = {
             "ignore_no_formats_error": True,
             "noplaylist": True,
-            "outtmpl": f"{item_title}_%(upload_date)s.%(ext)s",
+            "outtmpl": f"{item_title}_%(timestamp)s.%(ext)s",
             "progress_hooks": [lambda d: self._progress_hook(d, download_id)],
             "ffmpeg_location": self.ffmpeg_location,
             "writethumbnail": True,
