@@ -1,4 +1,4 @@
-FROM python:3.12-alpine
+FROM python:3.13-alpine
 
 # Install dependencies, including su-exec
 RUN apk update && apk add --no-cache ffmpeg su-exec
