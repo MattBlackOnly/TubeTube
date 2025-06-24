@@ -1,6 +1,3 @@
-from gevent import monkey
-monkey.patch_all()
-
 bind = "0.0.0.0:6543"
 workers = 1
 threads = 4
