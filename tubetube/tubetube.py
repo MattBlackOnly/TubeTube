@@ -1,6 +1,3 @@
-from gevent import monkey
-
-monkey.patch_all()
 import logging
 import threading
 from flask import Flask, render_template
