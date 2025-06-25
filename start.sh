@@ -1,15 +1,16 @@
 #!/bin/sh
 
 # ASCII Art
+echo "-----------------------------------------------------------"
 echo "  TTTTT  U   U  BBBBB   EEEEE   TTTTT  U   U  BBBBB   EEEEE"
-echo "    T    U   U  B    B  E        T    U   U  B    B  E    "
-echo "    T    U   U  BBBBB   EEEE     T    U   U  BBBBB   EEEE "
-echo "    T    U   U  B    B  E        T    U   U  B    B  E    "
-echo "    T     UUU   BBBBB   EEEEE    T     UUU   BBBBB   EEEEE"
-echo "------------------------------------------------"
+echo "    T    U   U  B    B  E        T     U   U  B    B  E    "
+echo "    T    U   U  BBBBB   EEEE     T     U   U  BBBBB   EEEE "
+echo "    T    U   U  B    B  E        T     U   U  B    B  E    "
+echo "    T     UUU   BBBBB   EEEEE    T      UUU   BBBBB   EEEEE"
+echo "-----------------------------------------------------------"
 echo "TUBETUBE - YouTube Downloader using yt-dlp"
 echo -e "\e[1;32mDesigned by MattBlackOnly\e[0m" 
-echo "------------------------------------------------"
+echo "-----------------------------------------------------------"
 
 # Log versions
 if [ -z "$TUBETUBE_VERSION" ]; then
@@ -49,4 +50,4 @@ chown -R appuser:appgroup /config /data /temp
 
 # Start the application as appuser
 echo "Starting TubeTube..."
-exec su-exec appuser:appgroup gunicorn tubetube.tubetube:app -c gunicorn_setup.py
+exec su-exec appuser:appgroup gunicorn tubetube.tubetube:app -c start_config.py
