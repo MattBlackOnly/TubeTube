@@ -50,4 +50,5 @@ chown -R appuser:appgroup /config /data /temp
 
 # Start the application as appuser
 echo "Starting TubeTube..."
-exec su-exec appuser:appgroup gunicorn tubetube.tubetube:app -c start_config.py
+exec su-exec appuser:appgroup gunicorn --preload tubetube.tubetube:app -c start_config.py
+
