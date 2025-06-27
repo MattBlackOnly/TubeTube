@@ -15,7 +15,7 @@ class WebApp(Settings, DownloadManager):
         DownloadManager.__init__(self)
         self.app = Flask(__name__)
         self.app.secret_key = Config.SECRET_KEY
-        self.socketio = SocketIO(self.app, cors_allowed_origins=Config.SOCKETIO_CORS_ALLOWED_ORIGINS)
+        self.socketio = SocketIO(self.app, async_mode="threading", cors_allowed_origins=Config.SOCKETIO_CORS_ALLOWED_ORIGINS)
 
         @self.app.route("/")
         def handle_index():
