@@ -3,4 +3,4 @@ workers = 1
 threads = 4
 timeout = 180
 preload_app = False
-worker_class = "gthread"
+worker_class = "geventwebsocket.gunicorn.workers.GeventWebSocketWorker"
