@@ -1,7 +1,7 @@
 FROM python:3.12-alpine
 
 # Install dependencies, including su-exec
-RUN apk update && apk add --no-cache ffmpeg su-exec
+RUN apk update && apk add --no-cache ffmpeg su-exec deno
 
 # Create appuser and appgroup
 RUN addgroup -g 1000 appgroup && adduser -D -u 1000 -G appgroup appuser
@@ -36,3 +36,4 @@ EXPOSE 6543
 
 # Use the start script as the entrypoint
 ENTRYPOINT ["/app/start.sh"]
+
