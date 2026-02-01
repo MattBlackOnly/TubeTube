@@ -3,5 +3,5 @@ gevent
 gevent-websocket
 flask
 flask_socketio
-yt_dlp[default]==2026.01.29
+yt_dlp[default]==2026.01.31
 pyyaml
