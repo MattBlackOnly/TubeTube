@@ -1,7 +1,7 @@
-gunicorn
-gevent
-gevent-websocket
-flask
-flask_socketio
+gunicorn==25.0.1
+gevent==25.9.1
+gevent-websocket==0.10.1
+flask==3.1.2
+flask_socketio==5.6.0
 yt_dlp[default]==2026.02.04
-pyyaml
+pyyaml==6.0.3
