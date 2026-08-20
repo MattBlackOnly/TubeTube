@@ -1,4 +1,5 @@
 gunicorn
+packaging
 gevent
 gevent-websocket
 flask
