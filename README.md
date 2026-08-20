@@ -111,14 +111,3 @@ environment:
 ### Desktop (Dark Mode)
 
 ![Screenshot](tubetube/static/screenshot.png)
-
-
-## Star History
-
-<a href="https://star-history.com/#mattblackonly/tubetube&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=mattblackonly/tubetube&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=mattblackonly/tubetube&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=mattblackonly/tubetube&type=Date" />
- </picture>
-</a>
