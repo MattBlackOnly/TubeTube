@@ -98,7 +98,14 @@ environment:
   - SUBTITLE_FORMAT=vtt             # Format of the subtitles (default: vtt)
   - SUBTITLE_LANGUAGES=en           # Subtitle language (default: en)
   - THREAD_COUNT=4                  # Number of threads for processing (default: 4)
+  - YTDLP_UPDATE=                   # Auto-update yt-dlp: "latest" or "nightly" (default: disabled)
+  - YTDLP_UPDATE_HOUR=3             # Hour to run the yt-dlp update, 0-23 (default: 3)
 ```
+
+### yt-dlp Auto-Update
+
+- `YTDLP_UPDATE` — When set to `latest` or `nightly`, yt-dlp will be upgraded automatically once per day at the specified hour. Unset by default — the version pinned in the image is used.
+- `YTDLP_UPDATE_HOUR` — Only applies when `YTDLP_UPDATE` is set. Accepts 0-23. Update logs are written to `ytdlp-update.log` in your config directory.
 
 ## Screenshots
 
