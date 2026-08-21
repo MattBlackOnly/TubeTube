@@ -19,10 +19,15 @@ else
     echo "Tubetube version: ${TUBETUBE_VERSION}"
 fi
 
-if command -v yt-dlp >/dev/null 2>&1; then
-    echo "yt-dlp installed version: $(yt-dlp --version)"
+if [ -f "requirements.txt" ]; then
+    YT_DLP_VERSION=$(awk -F'==' '/yt_dlp\[default\]/{print $2}' requirements.txt)
+    if [ -z "$YT_DLP_VERSION" ]; then
+        echo "yt-dlp version not found in requirements.txt"
+    else
+        echo "yt-dlp requirements.txt version: $YT_DLP_VERSION"
+    fi
 else
-    echo "yt-dlp not found."
+    echo "requirements.txt not found."
 fi
 
 # Default values for PUID and PGID
